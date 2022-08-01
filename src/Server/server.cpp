@@ -25,7 +25,6 @@ void SIGINT_handler(int signum) {
 }
 
 int main () {
-
     std::signal(SIGINT, SIGINT_handler);
 
 
@@ -37,7 +36,7 @@ int main () {
     int worker_id = manager.createWorker();
     manager.startWorker(worker_id);
 
-    WorkerEchoAcceptor acceptor(&loop, socket, manager.workers[worker_id]);
+    WorkerEchoAcceptor acceptor(&loop, socket, &manager);
 
     acceptor.accept();
 

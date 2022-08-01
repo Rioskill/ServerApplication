@@ -24,28 +24,29 @@ int main (int argc, char **argv) {
         return 1;
     }
 
-    if (argc < 3) {
+    if (argc < 4) {
         std::cout << "Not enough arguments\n";
         return 1;
     }
 
-    std::cout << "<WORKER> started\n";
+    char *workerName = get_argument(argv, 1);
+    char *inPipeName = get_argument(argv, 2);
+    char *outPipeName = get_argument(argv, 3);
 
-    char *inPipeName = get_argument(argv, 1);
-    char *outPipeName = get_argument(argv, 2);
+    printf("<%s> started\n", workerName);
 
-    printf("<WORKER> pipe_names: %s %s\n", inPipeName, outPipeName);
+    printf("<%s> pipe_names: %s %s\n", workerName, inPipeName, outPipeName);
 
     int in_fd = open(inPipeName, O_RDONLY);
     int out_fd = open(outPipeName, O_WRONLY);
 
     if (in_fd == -1) {
-        std::cout << "<WORKER> in_fd = -1\n";
+        printf("<%s> in_fd = -1\n", workerName);
         exit(1);
     }
 
     if (out_fd == -1) {
-        std::cout << "<WORKER> out_fd = -1\n";
+        printf("<%s> out_fd = -1\n", workerName);
         exit(1);
     }
 
@@ -59,19 +60,19 @@ int main (int argc, char **argv) {
         int size;
         read(in_fd, &size, sizeof(int));
 
-        printf("<WORKER> recieved size: %d\n", size);
+        printf("<%s> recieved size: %d\n", workerName, size);
 
         char *buffer = new char[size + 1];
-        buffer[size] = 0;
+        buffer[size] = '\0';
         read(in_fd, buffer, size);
 
-        printf("<WORKER> recieved: \"%s\"\n", buffer);
+        printf("<%s> recieved: \"%s\"\n", workerName, buffer);
 
         write(out_fd, &size, sizeof(int));
 
         write(out_fd, buffer, size);
 
-        printf("<WORKER> sent: \"%s\"\n", buffer);
+        printf("<%s> sent: \"%s\"\n", workerName, buffer);
 
         delete[] buffer;
     }

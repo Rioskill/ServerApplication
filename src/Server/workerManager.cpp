@@ -37,7 +37,8 @@ void WorkerManager::removeWorker(int id) {
 void WorkerManager::startWorker (int id) {
     int pid = fork();
     if (pid == 0) {
-        int p = execl("worker", "worker", out_pipe_name(id).c_str(), in_pipe_name(id).c_str(), NULL);
+        std::string workerName = std::string("worker_") + std::to_string(id);
+        int p = execl("worker", "worker", workerName.c_str(), out_pipe_name(id).c_str(), in_pipe_name(id).c_str(), NULL);
         std::cout << "failed to exec() worker" << std::endl;
     } else {
         worker_pids[id] = pid;
@@ -51,4 +52,8 @@ void WorkerManager::stopWorker (int id) {
 
     waitpid(worker_pids[id], &status, 1);
     worker_pids.erase(id);
+}
+
+Worker *WorkerManager::getWorker (int id) {
+    return workers[id];
 }

@@ -32,18 +32,26 @@ void WorkerEchoAcceptor::accept() {
     if (fd != -1) {
         AsyncInputStream *stream = new AsyncInputStream(fd, 20, loop);
 
-        stream->read(sizeof(int), [this, fd, stream](char *data){
+        int worker_id = workerManager->createWorker();
+        workerManager->startWorker(worker_id);
+
+        stream->read(sizeof(int), [this, fd, stream, worker_id](char *data){
             int size = static_cast<int>(*data);
 
-            stream->read(size, [this, fd, size, stream](char *data){
+            stream->read(size, [this, fd, size, stream, worker_id](char *data){
                 std::string res(data, size);
                 std::cout << "recieved \"" << res << "\" from client"<< std::endl;
 
-                worker->write(size, data, [this, fd]() {
-                    worker->read([this, fd](int response_size, char *data){
+                Worker *worker = workerManager->getWorker(worker_id);
+
+                worker->write(size, data, [this, fd, worker_id, worker]() {
+                    worker->read([this, fd, worker_id](int response_size, char *data){
                         AsyncOutputStream *out_stream = new AsyncOutputStream(fd, loop);
-                        out_stream->write(response_size, data, [this, out_stream]() {
+                        out_stream->write(response_size, data, [this, out_stream, worker_id]() {
                             delete out_stream;
+
+                            workerManager->stopWorker(worker_id);
+                            workerManager->removeWorker(worker_id);
                         });
                     });
                 });

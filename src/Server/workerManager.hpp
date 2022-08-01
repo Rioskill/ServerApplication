@@ -30,6 +30,8 @@ public:
 
     void startWorker (int id);
     void stopWorker (int id);
+
+    Worker *getWorker (int id);
 };
 
 #endif

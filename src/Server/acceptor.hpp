@@ -22,10 +22,10 @@ public:
 
 class WorkerEchoAcceptor: Acceptor {
 private:
-    Worker *worker;
+    WorkerManager *workerManager;
 
 public:
-    WorkerEchoAcceptor (EventLoop *loop, NetworkSocket &socket, Worker *worker): Acceptor(loop, socket), worker(worker) {}
+    WorkerEchoAcceptor (EventLoop *loop, NetworkSocket &socket, WorkerManager *workerManager): Acceptor(loop, socket), workerManager(workerManager) {}
 
     void accept();
 };
