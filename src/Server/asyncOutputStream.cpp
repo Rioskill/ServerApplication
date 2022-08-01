@@ -9,7 +9,7 @@ void AsyncOutputStream::write (int bytes, void *message, std::function<void()> c
     }
     else {
         loop->schedule_on_writeable(fd, [this, message, bytes, cb, written_bytes](){
-            write(bytes - written_bytes, message + written_bytes, cb);
+            write(bytes - written_bytes, static_cast<char*>(message) + written_bytes, cb);
         });
     }
 }
