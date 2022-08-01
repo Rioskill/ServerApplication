@@ -27,11 +27,11 @@ void NamedPipe::close() {
 void NamedPipe::createFIFO() {
     int p = mkfifo(name.c_str(), 0666);
     if (p == -1)
-        throw FIFODCreationException();
+        throw FIFOCreationException();
 }
 
 void NamedPipe::removeFIFO() {
     int p = unlink(name.c_str());
-    if (p == -1)
-        throw FIFODRemovalException();
+    // if (p == -1)
+        // throw FIFORemovalException();
 }

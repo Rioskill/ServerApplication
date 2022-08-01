@@ -1,6 +1,10 @@
 #include "worker.hpp"
 
 Worker::Worker (const std::string &in_pipe_name, const std::string &out_pipe_name, EventLoop *loop): in_pipe(in_pipe_name, loop), out_pipe(out_pipe_name, loop) {
+
+
+    std::cout << in_pipe_name << ' ' << out_pipe_name << std::endl;
+
     in_pipe.createFIFO();
     out_pipe.createFIFO();
 
@@ -8,9 +12,7 @@ Worker::Worker (const std::string &in_pipe_name, const std::string &out_pipe_nam
     out_pipe.open(O_RDWR, true);
 }
 
-Worker::~Worker () {
-    closeFIFOs();
-}
+Worker::~Worker () {}
 
 void Worker::closeFIFOs() {
     in_pipe.close();

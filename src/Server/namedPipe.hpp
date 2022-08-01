@@ -10,14 +10,14 @@
 #include "asyncInputStream.hpp"
 #include "asyncOutputStream.hpp"
 
-class FIFODCreationException: std::exception {
+class FIFOCreationException: std::exception {
 public:
     const char *what() const throw() {
         return "Cannot create FIFO\n";
     }
 };
 
-class FIFODRemovalException: std::exception {
+class FIFORemovalException: std::exception {
 public:
     const char *what() const throw() {
         return "Cannot remove FIFO\n";

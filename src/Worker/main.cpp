@@ -29,21 +29,23 @@ int main (int argc, char **argv) {
         return 1;
     }
 
+    std::cout << "<WORKER> started\n";
+
     char *inPipeName = get_argument(argv, 1);
     char *outPipeName = get_argument(argv, 2);
 
-    printf("%s %s\n", inPipeName, outPipeName);
+    printf("<WORKER> pipe_names: %s %s\n", inPipeName, outPipeName);
 
     int in_fd = open(inPipeName, O_RDONLY);
     int out_fd = open(outPipeName, O_WRONLY);
 
     if (in_fd == -1) {
-        std::cout << "in_fd = -1\n";
+        std::cout << "<WORKER> in_fd = -1\n";
         exit(1);
     }
 
     if (out_fd == -1) {
-        std::cout << "out_fd = -1\n";
+        std::cout << "<WORKER> out_fd = -1\n";
         exit(1);
     }
 

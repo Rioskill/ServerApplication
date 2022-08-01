@@ -7,7 +7,7 @@
 #include "asyncInputStream.hpp"
 #include "asyncOutputStream.hpp"
 
-#include "worker.hpp"
+#include "workerManager.hpp"
 
 class Acceptor {
 protected:

@@ -15,10 +15,12 @@
 #include "worker.hpp"
 
 EventLoop loop;
-Worker worker("from", "to", &loop);   // worker is global so it is deleted after SIGINT
+//Worker worker("from", "to", &loop);   // worker is global so it is deleted after SIGINT
+WorkerManager manager(&loop);
 
 void SIGINT_handler(int signum) {
     loop.stop();
+
     exit(0);
 }
 
@@ -31,7 +33,11 @@ int main () {
     const char* ip = "127.0.0.1";
 
     NetworkSocket socket (ip, port);
-    WorkerEchoAcceptor acceptor(&loop, socket, &worker);
+
+    int worker_id = manager.createWorker();
+    manager.startWorker(worker_id);
+
+    WorkerEchoAcceptor acceptor(&loop, socket, manager.workers[worker_id]);
 
     acceptor.accept();
 

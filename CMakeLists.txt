@@ -15,6 +15,7 @@ set(server_src
     ${server_src_path}/eventLoop.cpp
     ${server_src_path}/namedPipe.cpp
     ${server_src_path}/worker.cpp
+    ${server_src_path}/workerManager.cpp
 )
 
 set(client_src
