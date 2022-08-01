@@ -44,7 +44,6 @@ void WorkerEchoAcceptor::accept() {
                         AsyncOutputStream *out_stream = new AsyncOutputStream(fd, loop);
                         out_stream->write(response_size, data, [this, out_stream]() {
                             delete out_stream;
-                            // loop->stop();
                         });
                     });
                 });

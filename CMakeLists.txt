@@ -14,6 +14,7 @@ set(server_src
     ${server_src_path}/acceptor.cpp
     ${server_src_path}/eventLoop.cpp
     ${server_src_path}/namedPipe.cpp
+    ${server_src_path}/worker.cpp
 )
 
 set(client_src
