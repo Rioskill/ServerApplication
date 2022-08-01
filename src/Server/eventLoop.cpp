@@ -38,6 +38,10 @@ void EventLoop::set_fds_pack (std::unordered_map<int, std::function<void()>> &ca
     }
 }
 
+void EventLoop::stop() {
+    status = Status::Done;
+}
+
 void EventLoop::run() {
     status = Status::Working;
 

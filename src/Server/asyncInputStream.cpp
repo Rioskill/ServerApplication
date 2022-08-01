@@ -33,9 +33,6 @@ void AsyncInputStream::_read (unsigned int bytes, std::function<void(char*)> cb)
 }
 
 void AsyncInputStream::read (unsigned int bytes, std::function<void(char*)> cb) {
-
-    // std::cout << "read from fd " << get_fd() << std::endl;
-
     if (buffer.end - buffer.start >= bytes) {
         return_result(bytes, cb);
         return;

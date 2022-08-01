@@ -7,54 +7,33 @@
 #include <errno.h>
 #include <deque>
 #include <unordered_map>
+#include <csignal>
 
 #include "eventLoop.hpp"
 #include "acceptor.hpp"
 
 #include "worker.hpp"
 
-void clientAcceptor() {
-    const int port = 8080;
-    const char* ip = "127.0.0.1";
+EventLoop loop;
+Worker worker("from", "to", &loop);   // worker is global so it is deleted after SIGINT
 
-    NetworkSocket socket (ip, port);
-
-    EventLoop loop;
-
-    Acceptor acceptor(&loop, socket);
-
-    acceptor.accept();
-
-    loop.run();
+void SIGINT_handler(int signum) {
+    loop.stop();
+    exit(0);
 }
-
-//TODO: close pipes;
 
 int main () {
 
+    std::signal(SIGINT, SIGINT_handler);
+
+
     const int port = 8080;
     const char* ip = "127.0.0.1";
 
     NetworkSocket socket (ip, port);
-
-    EventLoop loop;
-
-    Worker worker("fromWorker", "toWorker", &loop);
-
     WorkerEchoAcceptor acceptor(&loop, socket, &worker);
 
-    // Acceptor acceptor(&loop, socket);
-
     acceptor.accept();
-
-    // worker.read();
-
-    // int size = 4;
-    // char *buffer = "smth";
-
-    // worker.write(size, buffer, [&worker](){
-    //     worker.read();
-    // });
 
     loop.run();
 

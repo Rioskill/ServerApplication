@@ -23,7 +23,6 @@ public:
         if (fd != -1)
             return fd;
         throw FileClosedException();
-        // return fd;
     }
     void set_fd (int fd) {
         this->fd =fd;

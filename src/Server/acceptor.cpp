@@ -37,13 +37,14 @@ void WorkerEchoAcceptor::accept() {
 
             stream->read(size, [this, fd, size, stream](char *data){
                 std::string res(data, size);
-                std::cout << "recieved " << res << " from client"<< std::endl;
+                std::cout << "recieved \"" << res << "\" from client"<< std::endl;
 
                 worker->write(size, data, [this, fd]() {
                     worker->read([this, fd](int response_size, char *data){
                         AsyncOutputStream *out_stream = new AsyncOutputStream(fd, loop);
-                        out_stream->write(response_size, data, [out_stream]() {
+                        out_stream->write(response_size, data, [this, out_stream]() {
                             delete out_stream;
+                            // loop->stop();
                         });
                     });
                 });

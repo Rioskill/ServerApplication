@@ -32,9 +32,6 @@ protected:
 
         ssize_t read_from (int fd, int bytes) {
             int res = ::read(fd, data + end, bytes - (end - start));
-
-            // std::cout << "read res: " << res << std::endl;
-
             return res;
 
         }

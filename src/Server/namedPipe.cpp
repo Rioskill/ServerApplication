@@ -6,7 +6,7 @@ NamedPipe::~NamedPipe () {
     close();
 }
 
-void NamedPipe::open (int mode = O_RDWR, bool non_block = true) {
+void NamedPipe::open (int mode, bool non_block) {
     fd = ::open(name.c_str(), mode);
 
     if (non_block) {
@@ -22,4 +22,16 @@ void NamedPipe::close() {
         ::close(fd);
         opened = false;
     }
+}
+
+void NamedPipe::createFIFO() {
+    int p = mkfifo(name.c_str(), 0666);
+    if (p == -1)
+        throw FIFODCreationException();
+}
+
+void NamedPipe::removeFIFO() {
+    int p = unlink(name.c_str());
+    if (p == -1)
+        throw FIFODRemovalException();
 }

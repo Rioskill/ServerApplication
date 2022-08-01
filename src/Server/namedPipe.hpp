@@ -2,12 +2,27 @@
 #define NAMEDPIPE
 
 #include <unistd.h>
+#include <sys/stat.h>
 #include <fcntl.h>
 #include <string>
 #include <exception>
 
 #include "asyncInputStream.hpp"
 #include "asyncOutputStream.hpp"
+
+class FIFODCreationException: std::exception {
+public:
+    const char *what() const throw() {
+        return "Cannot create FIFO\n";
+    }
+};
+
+class FIFODRemovalException: std::exception {
+public:
+    const char *what() const throw() {
+        return "Cannot remove FIFO\n";
+    }
+};
 
 class NamedPipe: virtual public File {
 protected:
@@ -18,7 +33,10 @@ public:
     NamedPipe (const std::string &name);
     ~NamedPipe();
 
-    void open (int mode, bool non_block);
+    void createFIFO();
+    void removeFIFO();
+
+    void open (int mode = O_RDWR, bool non_block = true);
     void close();
 };
 

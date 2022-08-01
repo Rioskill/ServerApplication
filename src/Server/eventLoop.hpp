@@ -32,6 +32,7 @@ public:
     void set_fds_pack (std::unordered_map<int, std::function<void()>> &callbacks, fd_set &set, int &max_fd);
 
     void run();
+    void stop();
 };
 
 #endif
