@@ -4,18 +4,29 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <wait.h>
 #include <string>
 #include <iostream>
 
+const int PORT = 8080;
+bool Running = true;
 
-#define PORT 8080
+char *read_from (int fd) {
+    int size;
+    read(fd, &size, 4);
+
+    char *buffer = new char[size + 1];
+
+    read(fd, buffer, size);
+    buffer[size] = '\0';
+    
+    return buffer;
+}
  
 int main(int argc, char const* argv[])
 {
     int sock = 0, valread, client_fd;
     struct sockaddr_in serv_addr;
-
-    // char buffer[1024] = { 0 };
 
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         printf("\n Socket creation error \n");
@@ -37,26 +48,38 @@ int main(int argc, char const* argv[])
         return -1;
     }
 
-    std::string input;
-    std::getline(std::cin, input);
+    int pid = fork();
 
-    const char *message = input.c_str();
-    int size = strlen(message);
+    if (pid == 0) {
+        while (Running) {
+            char *buffer = read_from(sock);
 
-    send(sock, &size, sizeof(int), 0);
-    send(sock, message, strlen(message), 0);
+            printf("recieved \"%s\"\n", buffer);
 
-    std::cout << "sent " << message << std::endl;
+            delete[] buffer;
+        }
+    } else {
 
-    read(sock, &size, 4);
+        while (Running) {
+            std::string input;
+            std::getline(std::cin, input);
 
-    char *buffer = new char[size + 1];
+            if (input == "exit") {
+                Running = false;
+                kill(pid, SIGKILL);
+            }
+            const char *message = input.c_str();
+            int size = strlen(message);
 
-    read(sock, buffer, size);
+            send(sock, &size, sizeof(int), 0);
+            send(sock, message, strlen(message), 0);
 
-    buffer[size] = '\0';
+            printf("sent \"%s\"\n", message);
+        }
+    }
 
-    printf("%s\n", buffer);
+    int status;
+    waitpid(pid, &status, 1);
  
     // closing the connected socket
     close(client_fd);

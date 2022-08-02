@@ -53,8 +53,10 @@ int main (int argc, char **argv) {
     delete[] inPipeName;
     delete[] outPipeName;
 
-    // int in_fd = open("toWorker", O_RDONLY);
-    // int out_fd = open("fromWorker", O_WRONLY);
+    // while (true) {
+    //     printf("<%s>\n", workerName);
+    //     sleep(1);
+    // }
 
     while (true) {
         int size;

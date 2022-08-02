@@ -21,7 +21,14 @@ WorkerManager::~WorkerManager() {
 }
 
 int WorkerManager::createWorker() {
-    int id = workers.size();
+    int id;
+
+    if (deleted_worker_ids.empty())
+        id = workers.size();
+    else {
+        id = deleted_worker_ids.front();
+        deleted_worker_ids.pop();
+    }
 
     workers.emplace(id, new Worker(in_pipe_name(id), out_pipe_name(id), loop));
 
@@ -32,6 +39,8 @@ void WorkerManager::removeWorker(int id) {
     workers[id]->closeFIFOs();
     delete workers[id];
     workers.erase(id);
+
+    deleted_worker_ids.push(id);
 }
 
 void WorkerManager::startWorker (int id) {
@@ -49,6 +58,11 @@ void WorkerManager::stopWorker (int id) {
     kill(worker_pids[id], SIGKILL);
 
     int status;
+
+    std::cout << "killing worker process\n";
+
+    if (WIFEXITED(status))
+        std::cout << "worker was killed succesfully\n";
 
     waitpid(worker_pids[id], &status, 1);
     worker_pids.erase(id);

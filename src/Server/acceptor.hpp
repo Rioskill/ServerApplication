@@ -25,9 +25,10 @@ class WorkerEchoAcceptor: Acceptor {
 private:
     WorkerManager *workerManager;
 
+    void process_message (Client *client, int worker_id);
+    void close_connection (Client *client, int worker_id);
 public:
     WorkerEchoAcceptor (EventLoop *loop, NetworkSocket &socket, WorkerManager *workerManager): Acceptor(loop, socket), workerManager(workerManager) {}
-
 
     void accept();
 };
