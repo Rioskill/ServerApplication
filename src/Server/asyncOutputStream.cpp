@@ -2,7 +2,7 @@
 
 AsyncOutputStream::AsyncOutputStream (int fd, EventLoop *loop): File(fd), Stream(fd, loop) {}
 
-void AsyncOutputStream::write (int bytes, void *message, std::function<void()> cb) {
+void AsyncOutputStream::write (unsigned int bytes, void *message, std::function<void()> cb) {
     int written_bytes = ::write(fd, message, bytes);
     if (bytes == written_bytes) {
         cb();

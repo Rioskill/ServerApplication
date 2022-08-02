@@ -19,7 +19,7 @@ public:
 
     File (): File(-1) {}
 
-    int get_fd() {
+    int get_fd() const {
         if (fd != -1)
             return fd;
         throw FileClosedException();

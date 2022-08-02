@@ -15,7 +15,8 @@ int main(int argc, char const* argv[])
     int sock = 0, valread, client_fd;
     struct sockaddr_in serv_addr;
 
-    char buffer[1024] = { 0 };
+    // char buffer[1024] = { 0 };
+
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         printf("\n Socket creation error \n");
         return -1;
@@ -37,7 +38,6 @@ int main(int argc, char const* argv[])
     }
 
     std::string input;
-
     std::getline(std::cin, input);
 
     const char *message = input.c_str();
@@ -48,7 +48,14 @@ int main(int argc, char const* argv[])
 
     std::cout << "sent " << message << std::endl;
 
-    valread = read(sock, buffer, 1024);
+    read(sock, &size, 4);
+
+    char *buffer = new char[size + 1];
+
+    read(sock, buffer, size);
+
+    buffer[size] = '\0';
+
     printf("%s\n", buffer);
  
     // closing the connected socket

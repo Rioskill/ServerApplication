@@ -32,10 +32,6 @@ int main () {
     const char* ip = "127.0.0.1";
 
     NetworkSocket socket (ip, port);
-
-    int worker_id = manager.createWorker();
-    manager.startWorker(worker_id);
-
     WorkerEchoAcceptor acceptor(&loop, socket, &manager);
 
     acceptor.accept();

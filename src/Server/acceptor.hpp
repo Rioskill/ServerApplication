@@ -4,8 +4,9 @@
 #include <iostream>
 #include "eventLoop.hpp"
 #include "networkSocket.hpp"
-#include "asyncInputStream.hpp"
-#include "asyncOutputStream.hpp"
+#include "client.hpp"
+
+#include "room.hpp"
 
 #include "workerManager.hpp"
 
@@ -26,6 +27,7 @@ private:
 
 public:
     WorkerEchoAcceptor (EventLoop *loop, NetworkSocket &socket, WorkerManager *workerManager): Acceptor(loop, socket), workerManager(workerManager) {}
+
 
     void accept();
 };

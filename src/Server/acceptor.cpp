@@ -30,25 +30,24 @@ void WorkerEchoAcceptor::accept() {
     int fd = socket.accept_connection();
 
     if (fd != -1) {
-        AsyncInputStream *stream = new AsyncInputStream(fd, 20, loop);
+        Client *client = new Client(fd, loop);
 
         int worker_id = workerManager->createWorker();
         workerManager->startWorker(worker_id);
 
-        stream->read(sizeof(int), [this, fd, stream, worker_id](char *data){
+        client->read(sizeof(int), [this, client, worker_id](char *data){
             int size = static_cast<int>(*data);
 
-            stream->read(size, [this, fd, size, stream, worker_id](char *data){
+            client->read(size, [this, client, size, worker_id](char *data){
                 std::string res(data, size);
                 std::cout << "recieved \"" << res << "\" from client"<< std::endl;
 
                 Worker *worker = workerManager->getWorker(worker_id);
 
-                worker->write(size, data, [this, fd, worker_id, worker]() {
-                    worker->read([this, fd, worker_id](int response_size, char *data){
-                        AsyncOutputStream *out_stream = new AsyncOutputStream(fd, loop);
-                        out_stream->write(response_size, data, [this, out_stream, worker_id]() {
-                            delete out_stream;
+                worker->write(size, data, [this, worker_id, worker, client]() {
+                    worker->read([this, worker_id, client](int response_size, char *data){
+                        client->write(response_size, data, [this, client, worker_id]() {
+                            delete client;
 
                             workerManager->stopWorker(worker_id);
                             workerManager->removeWorker(worker_id);
@@ -56,7 +55,6 @@ void WorkerEchoAcceptor::accept() {
                     });
                 });
 
-                delete stream;
             });
         });
     }
