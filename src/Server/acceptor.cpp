@@ -32,34 +32,32 @@ void WorkerEchoAcceptor::accept() {
     if (fd != -1) {
         Client *client = new Client(fd, loop);
 
-        int worker_id = workerManager->createWorker();
-        workerManager->startWorker(worker_id);
-
-        process_message(client, worker_id);
+        int client_id = room->addClient(client);
+        process_message(client, client_id);
     }
     loop->schedule_on_readable(socket.get_fd(), [this](){accept();});
 }
 
-void WorkerEchoAcceptor::close_connection (Client *client, int worker_id) {
+void WorkerEchoAcceptor::close_connection (Client *client, int client_id) {
     delete client;
-    workerManager->stopWorker(worker_id);
-    workerManager->removeWorker(worker_id);
+    room->removeClient(client_id);
 }
 
-void WorkerEchoAcceptor::process_message (Client *client, int worker_id) {
-    client->read([this, client, worker_id](int size, char *data){
+void WorkerEchoAcceptor::process_message (Client *client, int client_id) {
+    client->read([this, client, client_id](int size, char *data){
         std::string res(data, size);
         std::cout << "recieved \"" << res << "\" from client"<< std::endl;
 
         if (res == "exit") {
-            close_connection(client, worker_id);
+            close_connection(client, client_id);
         } else {
-            Worker *worker = workerManager->getWorker(worker_id);
-            worker->write(size, data, [this, worker_id, worker, client]() {
-                worker->read([this, worker_id, client](int response_size, char *data){
-                    client->write(response_size, data, [this, client, worker_id]() {
+            Worker *worker = room->getWorker();
 
-                        process_message(client, worker_id);
+            worker->write(size, data, [this, client_id, worker, client]() {
+                worker->read([this, client_id, client](int response_size, char *data){
+                    room->broadcast(response_size, data, [this, client, client_id]() {
+
+                        process_message(client, client_id);
                     });
                 });
             });

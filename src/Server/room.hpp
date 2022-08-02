@@ -1,7 +1,7 @@
 #ifndef ROOM
 #define ROOM
 
-#include <vector>
+#include <map>
 
 #include "worker.hpp"
 #include "client.hpp"
@@ -10,10 +10,14 @@ class Room {
 private:
     Worker *worker;
     int worker_id;
-    std::vector<Client*> clients;
+    std::map<int, Client*> clients;
+
+    unsigned int counter;
 
 public:
-    Room (Worker *worker, int worker_id): worker(worker), worker_id(worker_id) {}
+    Room (Worker *worker, int worker_id): worker(worker), worker_id(worker_id) {
+        counter = 0;
+    }
     
     Worker *getWorker() {
         return worker;
@@ -23,12 +27,19 @@ public:
         return worker_id;
     }
 
-    void addClient (Client *client) {
-        clients.push_back(client);
+    int addClient (Client *client) {
+        int id = counter++;
+        clients.emplace(id, client);
+        return id;
+    }
+
+    void removeClient (int id) {
+        clients.erase(id);
     }
 
     void broadcast (unsigned int bytes, void *message, std::function<void()> cb) {
-        for (Client *client: clients) {
+        for (auto &pair: clients) {
+            Client *client = pair.second;
             client->write(bytes, message, cb);
         }
     }
