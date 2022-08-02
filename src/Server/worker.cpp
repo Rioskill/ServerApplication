@@ -19,7 +19,7 @@ void Worker::closeFIFOs() {
 }
 
 void Worker::read (std::function<void(int, char*)> cb) {
-    in_pipe.read(sizeof(int), [this, cb](char *data){
+    in_pipe.read(4, [this, cb](char *data){
         int size = static_cast<int>(*data);
 
         std::cout << "recieved size: " << size << std::endl;

@@ -47,26 +47,22 @@ void WorkerEchoAcceptor::close_connection (Client *client, int worker_id) {
 }
 
 void WorkerEchoAcceptor::process_message (Client *client, int worker_id) {
-    client->read(sizeof(int), [this, client, worker_id](char *data){
-        int size = static_cast<int>(*data);
+    client->read([this, client, worker_id](int size, char *data){
+        std::string res(data, size);
+        std::cout << "recieved \"" << res << "\" from client"<< std::endl;
 
-        client->read(size, [this, client, size, worker_id](char *data){
-            std::string res(data, size);
-            std::cout << "recieved \"" << res << "\" from client"<< std::endl;
+        if (res == "exit") {
+            close_connection(client, worker_id);
+        } else {
+            Worker *worker = workerManager->getWorker(worker_id);
+            worker->write(size, data, [this, worker_id, worker, client]() {
+                worker->read([this, worker_id, client](int response_size, char *data){
+                    client->write(response_size, data, [this, client, worker_id]() {
 
-            if (res == "exit") {
-                close_connection(client, worker_id);
-            } else {
-                Worker *worker = workerManager->getWorker(worker_id);
-                worker->write(size, data, [this, worker_id, worker, client]() {
-                    worker->read([this, worker_id, client](int response_size, char *data){
-                        client->write(response_size, data, [this, client, worker_id]() {
-
-                            process_message(client, worker_id);
-                        });
+                        process_message(client, worker_id);
                     });
                 });
-            }
-        });
+            });
+        }
     });
 }
