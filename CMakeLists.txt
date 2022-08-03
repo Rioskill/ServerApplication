@@ -8,9 +8,9 @@ set(client_src_path src/Client)
 set(worker_src_path src/Worker)
 
 set(server_src
-    ${server_src_path}/server.cpp
-    ${server_src_path}/asyncInputStream.cpp
-    ${server_src_path}/asyncOutputStream.cpp
+    ${server_src_path}/main.cpp
+    ${server_src_path}/streams/asyncInputStream.cpp
+    ${server_src_path}/streams/asyncOutputStream.cpp
     ${server_src_path}/acceptor.cpp
     ${server_src_path}/connectionProcessor.cpp
     ${server_src_path}/eventLoop.cpp
@@ -31,5 +31,5 @@ add_executable(server ${server_src})
 add_executable(client ${client_src})
 add_executable(worker ${worker_src})
 
-target_include_directories(server PRIVATE ${server_src_path})
+target_include_directories(server PRIVATE ${server_src_path} ${server_src_path}/streams)
 target_include_directories(client PRIVATE ${client_src_path})
