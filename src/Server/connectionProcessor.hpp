@@ -13,6 +13,17 @@ public:
     virtual void process(int client_fd) = 0;
 };
 
+class BasicEchoConnectionProcessor: public ConnectionProcessor {
+private:
+    EventLoop *loop;
+
+    void process_message (Client *client);
+public:
+    BasicEchoConnectionProcessor (EventLoop *loop): loop(loop) {}
+
+    void process (int client_fd) override;
+};
+
 class RoomEchoConnectionProcessor: public ConnectionProcessor {
 private:
 
@@ -33,7 +44,7 @@ public:
     RoomEchoConnectionProcessor (WorkerManager *workerManager, RoomManager *roomManager, EventLoop *loop);
     ~RoomEchoConnectionProcessor();
 
-    void process(int client_fd) override;
+    void process (int client_fd) override;
 };
 
 #endif

@@ -85,3 +85,23 @@ void RoomEchoConnectionProcessor::process (int client_fd) {
         process_message(room, client);
     });
 }
+
+void BasicEchoConnectionProcessor::process_message (Client *client) {
+    client->read([this, client](int size, char *data){
+        client->write(size, data, [this, client, size, data](){
+            std::string message(data, size);
+            std::cout << "recieved and sent: " << std::quoted(message) << std::endl;
+
+            if (message == "exit") {
+                delete client;
+            } else {
+                process_message(client);
+            }
+        });
+    });
+}
+
+void BasicEchoConnectionProcessor::process (int client_fd) {
+    Client *client = new Client(client_fd, loop);
+    process_message(client);
+}

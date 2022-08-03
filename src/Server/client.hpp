@@ -18,6 +18,9 @@ public:
     void read (std::function<void(int, char*)> cb) {
         in.read(4, [this, cb](char *data) {
             int size = static_cast<int>(*data);
+
+            std::cout << "recieved size: " << size << std::endl;
+
             in.read(size, [size, cb](char *data) {
                 cb(size, data);
             });
