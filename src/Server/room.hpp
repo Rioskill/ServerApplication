@@ -15,52 +15,24 @@ private:
 
     int managerID;
 public:
-    Room (Worker *worker, int managerID = -1): worker(worker), managerID(managerID) {}
+    Room (Worker *worker, int managerID);
 
-    void setManagerID (int managerID) {
-        this->managerID = managerID;
-    }
-
-    int getManagerID() {
-        return managerID;
-    }
+    void setManagerID (int managerID);
+    int getManagerID();
     
-    Worker *getWorker() {
-        return worker;
-    }
+    Worker *getWorker();
 
-    int getWorkerManagerId() {
-        return worker->getManagerID();
-    }
+    int getWorkerManagerId();
 
-    int addClient (Client *client) {
-        int id = id_assigner.assignID();
-        clients.emplace(id, client);
-        return id;
-    }
+    int addClient (Client *client);
 
-    void removeClient (int id) {
-        clients.erase(id);
-    }
+    void removeClient (int id);
+    void removeClient (Client *client);
 
-    void removeClient (Client *client) {
-        removeClient(client->getManagerID());
-    }
+    void broadcast (unsigned int bytes, void *message, std::function<void()> cb);
 
-    void broadcast (unsigned int bytes, void *message, std::function<void()> cb) {
-        for (auto &pair: clients) {
-            Client *client = pair.second;
-            client->write(bytes, message, cb);
-        }
-    }
-
-    int clientsCount() {
-        return clients.size();
-    }
-
-    bool empty() {
-        return clients.empty();
-    }
+    int clientsCount();
+    bool empty();
 };
 
 

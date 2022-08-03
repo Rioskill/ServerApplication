@@ -16,6 +16,7 @@ set(server_src
     ${server_src_path}/eventLoop.cpp
     ${server_src_path}/namedPipe.cpp
     ${server_src_path}/worker.cpp
+    ${server_src_path}/room.cpp
     ${server_src_path}/managers/workerManager.cpp
     ${server_src_path}/managers/roomManager.cpp
 )
