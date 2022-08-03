@@ -1,12 +1,10 @@
 #include "connectionProcessor.hpp"
 
 RoomEchoConnectionProcessor::RoomEchoConnectionProcessor (WorkerManager *workerManager, EventLoop *loop): workerManager(workerManager), loop(loop) {
-    int worker_id = workerManager->createWorker();
-    Worker *worker = workerManager->getWorker(worker_id);
+    Worker *worker = workerManager->createWorker();
     
     room = new Room(worker);
-
-    workerManager->startWorker(worker_id);
+    workerManager->startWorker(worker);
 }
 
 RoomEchoConnectionProcessor::~RoomEchoConnectionProcessor() {

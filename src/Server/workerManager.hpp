@@ -25,13 +25,13 @@ public:
     WorkerManager (EventLoop *loop);
     ~WorkerManager();
     
-    int createWorker();
+    Worker *createWorker();
     void removeWorker (int id);
     void removeWorker (Worker *worker);
 
     void startWorker (int id);
     void startWorker (Worker *worker);
-    
+
     void stopWorker (int id);
     void stopWorker (Worker *worker);
 

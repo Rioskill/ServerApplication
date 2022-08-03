@@ -32,6 +32,6 @@ void NamedPipe::createFIFO() {
 
 void NamedPipe::removeFIFO() {
     int p = unlink(name.c_str());
-    // if (p == -1)
-        // throw FIFORemovalException();
+    if (p == -1)
+        throw FIFORemovalException();
 }
