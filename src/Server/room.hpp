@@ -53,6 +53,14 @@ public:
             client->write(bytes, message, cb);
         }
     }
+
+    int clientsCount() {
+        return clients.size();
+    }
+
+    bool empty() {
+        return clients.empty();
+    }
 };
 
 

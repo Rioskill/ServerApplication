@@ -11,13 +11,13 @@
 
 #include "eventLoop.hpp"
 #include "acceptor.hpp"
+#include "workerManager.hpp"
+#include "roomManager.hpp"
 #include "connectionProcessor.hpp"
 
-#include "worker.hpp"
-
 EventLoop loop;
-//Worker worker("from", "to", &loop);   // worker is global so it is deleted after SIGINT
-WorkerManager manager(&loop);
+WorkerManager workerManager(&loop);   // global so they properly delete everything after SIGINT
+RoomManager roomManager;
 
 void SIGINT_handler(int signum) {
     loop.stop();
@@ -34,7 +34,7 @@ int main () {
 
     NetworkSocket socket (ip, port);
 
-    RoomEchoConnectionProcessor processor(&manager, &loop);
+    RoomEchoConnectionProcessor processor(&workerManager, &roomManager, &loop);
 
     Acceptor acceptor(socket, &loop, &processor);
 

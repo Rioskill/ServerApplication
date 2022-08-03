@@ -1,11 +1,11 @@
 #include "workerManager.hpp"
 
 std::string WorkerManager::in_pipe_name (int id) {
-    return std::string("in_pipe_") + std::to_string(id);
+    return std::string("tmp/in_pipe_") + std::to_string(id);
 }
 
 std::string WorkerManager::out_pipe_name (int id) {
-    return std::string("out_pipe_") + std::to_string(id);
+    return std::string("tmp/out_pipe_") + std::to_string(id);
 }
 
 WorkerManager::WorkerManager (EventLoop *loop): loop(loop) {}

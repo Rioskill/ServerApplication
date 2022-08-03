@@ -12,12 +12,14 @@ private:
     ReuseIDAssigner id_assigner;
 
 public:
-    RoomManager ();
+    RoomManager() = default;
     ~RoomManager();
 
-    int createRoom (Worker *worker);
+    Room *createRoom (Worker *worker);
     void removeRoom (int id);
     void removeRoom (Room *room);
+
+    Room *getRoom (int id);
 };
 
 #endif
