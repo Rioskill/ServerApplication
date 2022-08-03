@@ -15,7 +15,7 @@ public:
     RoomManager ();
     ~RoomManager();
 
-    int createRoom(Worker *worker, int worker_id);
+    int createRoom(Worker *worker);
     void removeRoom(int id);
 };
 

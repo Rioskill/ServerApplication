@@ -9,13 +9,12 @@
 class Room {
 private:
     Worker *worker;
-    int worker_id;
     std::map<int, Client*> clients;
 
     unsigned int counter;
 
 public:
-    Room (Worker *worker, int worker_id): worker(worker), worker_id(worker_id) {
+    Room (Worker *worker): worker(worker){
         counter = 0;
     }
     
@@ -23,8 +22,8 @@ public:
         return worker;
     }
 
-    int getWorkerId() {
-        return worker_id;
+    int getWorkerManagerId() {
+        return worker->getManagerID();
     }
 
     int addClient (Client *client) {

@@ -1,9 +1,9 @@
 #include "roomManager.hpp"
 
-int RoomManager::createRoom(Worker *worker, int worker_id) {
+int RoomManager::createRoom(Worker *worker) {
     int id = id_assigner.assignId();
 
-    rooms.emplace(id, new Room(worker, worker_id));
+    rooms.emplace(id, new Room(worker));
 
     return id;
 }

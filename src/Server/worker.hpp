@@ -14,9 +14,13 @@ private:
     AsyncInputNamedPipeStream in_pipe;
     AsyncOutputNamedPipeStream out_pipe;
 
+    int managerID;
 public:
-    Worker (const std::string &in_pipe_name, const std::string &out_pipe_name, EventLoop *loop);
+    Worker (const std::string &in_pipe_name, const std::string &out_pipe_name, EventLoop *loop, int managerID=-1);
     ~Worker();
+
+    void setManagerID (int managerID);
+    int getManagerID();
 
     void closeFIFOs();
 

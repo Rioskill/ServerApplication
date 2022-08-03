@@ -1,6 +1,7 @@
 #include "worker.hpp"
 
-Worker::Worker (const std::string &in_pipe_name, const std::string &out_pipe_name, EventLoop *loop): in_pipe(in_pipe_name, loop), out_pipe(out_pipe_name, loop) {
+Worker::Worker (const std::string &in_pipe_name, const std::string &out_pipe_name, EventLoop *loop, int managerID)
+: in_pipe(in_pipe_name, loop), out_pipe(out_pipe_name, loop), managerID(managerID) {
     in_pipe.createFIFO();
     out_pipe.createFIFO();
 
@@ -9,6 +10,14 @@ Worker::Worker (const std::string &in_pipe_name, const std::string &out_pipe_nam
 }
 
 Worker::~Worker () {}
+
+void Worker::setManagerID (int managerID) {
+    this->managerID = managerID;
+}
+
+int Worker::getManagerID() {
+    return managerID;
+}
 
 void Worker::closeFIFOs() {
     in_pipe.close();

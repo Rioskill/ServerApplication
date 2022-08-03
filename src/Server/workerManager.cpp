@@ -29,12 +29,16 @@ int WorkerManager::createWorker() {
     return id;
 }
 
-void WorkerManager::removeWorker(int id) {
+void WorkerManager::removeWorker (int id) {
     workers[id]->closeFIFOs();
     delete workers[id];
     workers.erase(id);
 
     id_assigner.releaseId(id);
+}
+
+void WorkerManager::removeWorker (Worker *worker) {
+    removeWorker(worker->getManagerID());
 }
 
 void WorkerManager::startWorker (int id) {
@@ -46,6 +50,10 @@ void WorkerManager::startWorker (int id) {
     } else {
         worker_pids[id] = pid;
     }
+}
+
+void WorkerManager::startWorker (Worker *worker) {
+    startWorker(worker->getManagerID());
 }
 
 void WorkerManager::stopWorker (int id) {
@@ -60,6 +68,10 @@ void WorkerManager::stopWorker (int id) {
 
     waitpid(worker_pids[id], &status, 1);
     worker_pids.erase(id);
+}
+
+void WorkerManager::stopWorker (Worker *worker) {
+    stopWorker(worker->getManagerID());
 }
 
 Worker *WorkerManager::getWorker (int id) {

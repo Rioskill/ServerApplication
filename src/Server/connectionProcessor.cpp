@@ -4,14 +4,14 @@ RoomEchoConnectionProcessor::RoomEchoConnectionProcessor (WorkerManager *workerM
     int worker_id = workerManager->createWorker();
     Worker *worker = workerManager->getWorker(worker_id);
     
-    room = new Room(worker, worker_id);
+    room = new Room(worker);
 
     workerManager->startWorker(worker_id);
 }
 
 RoomEchoConnectionProcessor::~RoomEchoConnectionProcessor() {
-    workerManager->stopWorker(room->getWorkerId());
-    workerManager->removeWorker(room->getWorkerId());
+    workerManager->stopWorker(room->getWorker());
+    workerManager->removeWorker(room->getWorker());
 
     delete room;
 }

@@ -26,10 +26,14 @@ public:
     ~WorkerManager();
     
     int createWorker();
-    void removeWorker(int id);
+    void removeWorker (int id);
+    void removeWorker (Worker *worker);
 
     void startWorker (int id);
+    void startWorker (Worker *worker);
+    
     void stopWorker (int id);
+    void stopWorker (Worker *worker);
 
     Worker *getWorker (int id);
 };
