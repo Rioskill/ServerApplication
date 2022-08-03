@@ -12,6 +12,7 @@ set(server_src
     ${server_src_path}/asyncInputStream.cpp
     ${server_src_path}/asyncOutputStream.cpp
     ${server_src_path}/acceptor.cpp
+    ${server_src_path}/connectionProcessor.cpp
     ${server_src_path}/eventLoop.cpp
     ${server_src_path}/namedPipe.cpp
     ${server_src_path}/worker.cpp

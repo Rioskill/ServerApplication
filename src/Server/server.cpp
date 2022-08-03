@@ -11,6 +11,7 @@
 
 #include "eventLoop.hpp"
 #include "acceptor.hpp"
+#include "connectionProcessor.hpp"
 
 #include "worker.hpp"
 
@@ -32,7 +33,10 @@ int main () {
     const char* ip = "127.0.0.1";
 
     NetworkSocket socket (ip, port);
-    WorkerEchoAcceptor acceptor(&loop, socket, &manager);
+
+    RoomEchoConnectionProcessor processor(&manager, &loop);
+
+    Acceptor acceptor(socket, &loop, &processor);
 
     acceptor.accept();
 

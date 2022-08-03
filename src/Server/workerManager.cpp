@@ -8,7 +8,9 @@ std::string WorkerManager::out_pipe_name (int id) {
     return std::string("out_pipe_") + std::to_string(id);
 }
 
-WorkerManager::WorkerManager (EventLoop *loop): loop(loop) {}
+WorkerManager::WorkerManager (EventLoop *loop): loop(loop) {
+    std::cout << "size: " << deleted_worker_ids.size() << std::endl;
+}
 
 WorkerManager::~WorkerManager() {
     for (auto it = workers.begin(); it != workers.end(); it++) {
@@ -21,14 +23,23 @@ WorkerManager::~WorkerManager() {
 }
 
 int WorkerManager::createWorker() {
+
+    std::cout << "creating worker\n";
+    std::cout << "size: " << deleted_worker_ids.size() << std::endl;
+
     int id;
 
-    if (deleted_worker_ids.empty())
+    if (deleted_worker_ids.empty()) {
+        std::cout << "empty\n";
         id = workers.size();
-    else {
+    } else {
+        std::cout << "not empty\n";
+        std::cout << "size: " << deleted_worker_ids.size() << std::endl;
         id = deleted_worker_ids.front();
         deleted_worker_ids.pop();
     }
+
+    std::cout << "id: " << id << std::endl;
 
     workers.emplace(id, new Worker(in_pipe_name(id), out_pipe_name(id), loop));
 
@@ -36,6 +47,9 @@ int WorkerManager::createWorker() {
 }
 
 void WorkerManager::removeWorker(int id) {
+
+    std::cout << "removing worker\n";
+
     workers[id]->closeFIFOs();
     delete workers[id];
     workers.erase(id);
