@@ -13,6 +13,7 @@ class Worker {
 private:
     AsyncInputNamedPipeStream in_pipe;
     AsyncOutputNamedPipeStream out_pipe;
+
 public:
     Worker (const std::string &in_pipe_name, const std::string &out_pipe_name, EventLoop *loop);
     ~Worker();

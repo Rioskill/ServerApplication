@@ -7,13 +7,14 @@
 #include <wait.h>
 #include <queue>
 
+#include "idAssigner.hpp"
 #include "worker.hpp"
 
 class WorkerManager {
 private:
     std::map<int, Worker*> workers;
     std::map<int, int> worker_pids;
-    std::queue<int> deleted_worker_ids;
+    IdAssigner id_assigner;
 
     EventLoop *loop;
 
