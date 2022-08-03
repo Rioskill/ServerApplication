@@ -36,6 +36,10 @@ public:
         clients.erase(id);
     }
 
+    void removeClient (Client *client) {
+        removeClient(client->getManagerID());
+    }
+
     void broadcast (unsigned int bytes, void *message, std::function<void()> cb) {
         for (auto &pair: clients) {
             Client *client = pair.second;

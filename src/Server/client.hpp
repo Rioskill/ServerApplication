@@ -10,8 +10,10 @@ private:
     AsyncInputStream in;
     AsyncOutputStream out;
 
+    int managerID;
+
 public:
-    Client (const File &fd, EventLoop *loop): in(fd.get_fd(), 20, loop), out(fd.get_fd(), loop) {}
+    Client (const File &fd, EventLoop *loop, int managerID=-1): in(fd.get_fd(), 20, loop), out(fd.get_fd(), loop), managerID(managerID) {}
 
     void read (std::function<void(int, char*)> cb) {
         in.read(4, [this, cb](char *data) {
@@ -25,6 +27,14 @@ public:
         out.write(sizeof(int), &bytes, [this, bytes, message, cb](){
             out.write(bytes, message, cb);
         });
+    }
+
+    void setManagerID (int managerID) {
+        this->managerID = managerID;
+    }
+
+    int getManagerID() {
+        return managerID;
     }
 };
 

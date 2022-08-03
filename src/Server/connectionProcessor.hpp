@@ -16,8 +16,8 @@ private:
     Room *room;
     EventLoop *loop;
 
-    void process_message (Client *client, int client_id);
-    void close_connection (Client *client, int client_id);
+    void process_message (Client *client);
+    void close_connection (Client *client);
 
 public:
     RoomEchoConnectionProcessor (WorkerManager *workerManager, EventLoop *loop);
