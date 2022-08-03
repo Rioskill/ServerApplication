@@ -21,7 +21,7 @@ WorkerManager::~WorkerManager() {
 }
 
 Worker *WorkerManager::createWorker() {
-    int id = id_assigner.assignId();
+    int id = id_assigner.assignID();
 
     workers.emplace(id, new Worker(in_pipe_name(id), out_pipe_name(id), loop, id));
 
@@ -33,7 +33,7 @@ void WorkerManager::removeWorker (int id) {
     delete workers[id];
     workers.erase(id);
 
-    id_assigner.releaseId(id);
+    id_assigner.releaseID(id);
 }
 
 void WorkerManager::removeWorker (Worker *worker) {

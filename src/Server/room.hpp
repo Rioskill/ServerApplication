@@ -5,17 +5,24 @@
 
 #include "worker.hpp"
 #include "client.hpp"
+#include "idAssigner.hpp"
 
 class Room {
 private:
     Worker *worker;
     std::map<int, Client*> clients;
+    UniqueIDAssigner id_assigner;
 
-    unsigned int counter;
-
+    int managerID;
 public:
-    Room (Worker *worker): worker(worker){
-        counter = 0;
+    Room (Worker *worker, int managerID = -1): worker(worker), managerID(managerID) {}
+
+    void setManagerID (int managerID) {
+        this->managerID = managerID;
+    }
+
+    int getManagerID() {
+        return managerID;
     }
     
     Worker *getWorker() {
@@ -27,7 +34,7 @@ public:
     }
 
     int addClient (Client *client) {
-        int id = counter++;
+        int id = id_assigner.assignID();
         clients.emplace(id, client);
         return id;
     }

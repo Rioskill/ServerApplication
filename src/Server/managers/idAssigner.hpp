@@ -3,19 +3,24 @@
 
 #include <queue>
 
-class IdAssigner {
+class IDAssigner {
+public:
+    virtual int assignID() = 0;
+};
+
+class ReuseIDAssigner: public IDAssigner {
 private:
     std::queue<int> deleted_ids;
     unsigned int counter;
 
 public:
-    IdAssigner(): counter(0) {}
+    ReuseIDAssigner(): counter(0) {}
 
-    int countDeletedIds() {
+    int countDeletedIDs() {
         return deleted_ids.size();
     }
 
-    int assignId () {
+    int assignID() override {
         if (deleted_ids.empty()) {
             return counter++;
         }
@@ -25,8 +30,20 @@ public:
         return id;
     }
 
-    void releaseId(int id) {
+    void releaseID(int id) {
         deleted_ids.push(id);
+    }
+};
+
+class UniqueIDAssigner: public IDAssigner {
+private:
+    unsigned int counter;
+
+public:
+    UniqueIDAssigner(): counter(0) {}
+
+    int assignID() override {
+        return counter++;
     }
 };
 

@@ -14,7 +14,7 @@ class WorkerManager {
 private:
     std::map<int, Worker*> workers;
     std::map<int, int> worker_pids;
-    IdAssigner id_assigner;
+    ReuseIDAssigner id_assigner;
 
     EventLoop *loop;
 

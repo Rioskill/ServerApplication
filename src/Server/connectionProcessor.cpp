@@ -32,7 +32,6 @@ void RoomEchoConnectionProcessor::process_message (Client *client) {
             worker->write(size, data, [this, worker, client]() {
                 worker->read([this, client](int response_size, char *data){
                     room->broadcast(response_size, data, [this, client]() {
-
                         process_message(client);
                     });
                 });

@@ -9,14 +9,15 @@
 class RoomManager {
 private:
     std::map<int, Room*> rooms;
-    IdAssigner id_assigner;
+    ReuseIDAssigner id_assigner;
 
 public:
     RoomManager ();
     ~RoomManager();
 
-    int createRoom(Worker *worker);
-    void removeRoom(int id);
+    int createRoom (Worker *worker);
+    void removeRoom (int id);
+    void removeRoom (Room *room);
 };
 
 #endif
