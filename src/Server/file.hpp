@@ -25,7 +25,7 @@ public:
         throw FileClosedException();
     }
     void set_fd (int fd) {
-        this->fd =fd;
+        this->fd = fd;
     }
 };
 

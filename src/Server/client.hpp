@@ -13,7 +13,7 @@ private:
     int managerID;
 
 public:
-    Client (const File &fd, EventLoop *loop, int managerID=-1): in(fd.get_fd(), 20, loop), out(fd.get_fd(), loop), managerID(managerID) {}
+    Client (const File &file, EventLoop *loop, int managerID = -1): in(file.get_fd(), 20, loop), out(file.get_fd(), loop), managerID(managerID) {}
 
     void read (std::function<void(int, char*)> cb) {
         in.read(4, [this, cb](char *data) {
@@ -38,6 +38,10 @@ public:
 
     int getManagerID() {
         return managerID;
+    }
+
+    void close() {
+        ::close(in.get_fd());
     }
 };
 

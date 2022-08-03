@@ -93,6 +93,7 @@ void BasicEchoConnectionProcessor::process_message (Client *client) {
             std::cout << "recieved and sent: " << std::quoted(message) << std::endl;
 
             if (message == "exit") {
+                client->close();
                 delete client;
             } else {
                 process_message(client);
