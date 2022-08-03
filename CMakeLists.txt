@@ -16,7 +16,8 @@ set(server_src
     ${server_src_path}/eventLoop.cpp
     ${server_src_path}/namedPipe.cpp
     ${server_src_path}/worker.cpp
-    ${server_src_path}/workerManager.cpp
+    ${server_src_path}/managers/workerManager.cpp
+    ${server_src_path}/managers/roomManager.cpp
 )
 
 set(client_src
@@ -31,5 +32,5 @@ add_executable(server ${server_src})
 add_executable(client ${client_src})
 add_executable(worker ${worker_src})
 
-target_include_directories(server PRIVATE ${server_src_path} ${server_src_path}/streams)
+target_include_directories(server PRIVATE ${server_src_path} ${server_src_path}/streams ${server_src_path}/managers)
 target_include_directories(client PRIVATE ${client_src_path})
