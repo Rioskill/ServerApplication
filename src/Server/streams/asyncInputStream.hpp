@@ -31,14 +31,24 @@ protected:
         }
 
         ssize_t read_from (int fd, int bytes) {
-            int res = ::read(fd, data + end, bytes - (end - start));
-            return res;
+            ssize_t bytes_read = ::read(fd, data + end, bytes - (end - start));
+            return bytes_read;
+        }
 
+        ssize_t read_possible (int fd) {
+            ssize_t bytes_read = ::read(fd, data + end, size - end - 1);
+
+            if (bytes_read != -1)
+                end += bytes_read;
+
+            return bytes_read;
         }
 
         void expand() {
             unsigned int new_size = size * 2;
             char *new_data = new char[new_size];
+
+            std::cout << "expanding, new size = " << new_size << std::endl;
 
             memcpy(new_data, data + start, size - start);
             size = new_size;
@@ -57,8 +67,9 @@ protected:
     };
 
     Buffer buffer;
-    void _read (unsigned int bytes, std::function<void(char*)> cb);
-    void return_result (unsigned int bytes, std::function<void(char*)> cb);
+    void return_result (unsigned int bytes, unsigned int skip, std::function<void(int, char*)> cb);
+
+    void read_possible (std::function<void()> cb);
 
 public:
     AsyncInputStream (int fd, unsigned int buffer_size, EventLoop *loop);
@@ -70,7 +81,8 @@ public:
 
     const char *get_data() {return buffer.data;}
 
-    void read (unsigned int bytes, std::function<void(char*)> cb);
+    void read (unsigned int bytes, std::function<void(int, char*)> cb);
+    void read_until (const std::string &delimiter, std::function<void(int, char*)> cb);
 };
 
 #endif

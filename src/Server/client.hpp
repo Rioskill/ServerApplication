@@ -16,16 +16,9 @@ public:
     Client (const File &file, EventLoop *loop, int managerID = -1): in(file.get_fd(), 20, loop), out(file.get_fd(), loop), managerID(managerID) {}
 
     void read (std::function<void(int, char*)> cb) {
-        in.read(4, [this, cb](char *data) {
-            int size = static_cast<int>(*data);
-
-            std::cout << "recieved size: " << size << std::endl;
-
-            in.read(size, [size, cb](char *data) {
-                cb(size, data);
-            });
-        });
+        in.read_until("\n", cb);
     }
+
     void write (unsigned int bytes, void *message, std::function<void()> cb){
         out.write(sizeof(int), &bytes, [this, bytes, message, cb](){
             out.write(bytes, message, cb);

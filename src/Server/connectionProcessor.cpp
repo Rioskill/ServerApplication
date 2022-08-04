@@ -88,7 +88,7 @@ void RoomEchoConnectionProcessor::process (int client_fd) {
 
 void BasicEchoConnectionProcessor::process_message (Client *client) {
     client->read([this, client](int size, char *data){
-        client->write(size, data, [this, client, size, data](){
+        client->write(size, data, [this, size, client, data](){
             std::string message(data, size);
             std::cout << "recieved and sent: " << std::quoted(message) << std::endl;
 

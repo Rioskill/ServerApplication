@@ -34,8 +34,8 @@ int main () {
 
     NetworkSocket socket (ip, port);
 
-    RoomEchoConnectionProcessor processor(&workerManager, &roomManager, &loop);
-    // BasicEchoConnectionProcessor processor(&loop);
+    // RoomEchoConnectionProcessor processor(&workerManager, &roomManager, &loop);
+    BasicEchoConnectionProcessor processor(&loop);
 
     Acceptor acceptor(socket, &loop, &processor);
 

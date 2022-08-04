@@ -22,6 +22,30 @@ char *read_from (int fd) {
     
     return buffer;
 }
+
+void send_size (int fd, const std::string &message) {
+    const char *ch_message = message.c_str();
+    int size = strlen(ch_message);
+
+    send(fd, &size, sizeof(int), 0);
+    send(fd, ch_message, size, 0);
+
+    printf("sent \"%s\"\n", ch_message);
+}
+
+void send_endl (int fd, const std::string &message) {
+    char *ch_message = new char[message.size() + 1];
+
+    memcpy(ch_message, message.c_str(), message.size());
+    ch_message[message.size()] = '\n';
+    int size = message.size() + 1;
+
+    send(fd, ch_message, size, 0);
+
+    printf("sent \"%s\"\n", message.c_str());
+
+    delete[] ch_message;
+}
  
 int main(int argc, char const* argv[])
 {
@@ -68,13 +92,9 @@ int main(int argc, char const* argv[])
                 Running = false;
                 kill(pid, SIGKILL);
             }
-            const char *message = input.c_str();
-            int size = strlen(message);
 
-            send(sock, &size, sizeof(int), 0);
-            send(sock, message, strlen(message), 0);
-
-            printf("sent \"%s\"\n", message);
+            // send_endl(sock, input);
+            send_size(sock, input);
         }
     }
 

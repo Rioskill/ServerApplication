@@ -28,9 +28,9 @@ void Worker::closeFIFOs() {
 }
 
 void Worker::read (std::function<void(int, char*)> cb) {
-    in_pipe.read(4, [this, cb](char *data){
+    in_pipe.read(4, [this, cb](int message_size, char *data){
         int size = static_cast<int>(*data);
-        in_pipe.read(size, [this, size, cb](char *data){
+        in_pipe.read(size, [this, cb](int size, char *data){
             std::string res(data, size);
             std::cout << "recieved: \"" << res << "\"\n";
 
