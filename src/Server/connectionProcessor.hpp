@@ -4,24 +4,25 @@
 #include "workerManager.hpp"
 #include "roomManager.hpp"
 #include "client.hpp"
+#include "HttpRequest.hpp"
+#include "HttpResponse.hpp"
 
 #include <map>
 #include <iomanip>
 
 class ConnectionProcessor {
 public:
-    virtual void process(int client_fd) = 0;
+    virtual void process(Client *client) = 0;
 };
 
 class BasicEchoConnectionProcessor: public ConnectionProcessor {
 private:
     EventLoop *loop;
-
-    void process_message (Client *client);
+    
 public:
     BasicEchoConnectionProcessor (EventLoop *loop): loop(loop) {}
 
-    void process (int client_fd) override;
+    void process (Client *client) override;
 };
 
 class RoomEchoConnectionProcessor: public ConnectionProcessor {
@@ -44,7 +45,7 @@ public:
     RoomEchoConnectionProcessor (WorkerManager *workerManager, RoomManager *roomManager, EventLoop *loop);
     ~RoomEchoConnectionProcessor();
 
-    void process (int client_fd) override;
+    void process (Client *client) override;
 };
 
 #endif

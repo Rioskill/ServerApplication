@@ -4,9 +4,6 @@ AsyncInputStream::AsyncInputStream (int fd, unsigned int buffer_size, EventLoop 
 AsyncInputStream::AsyncInputStream (const AsyncInputStream &other): Stream(fd, loop), buffer(other.buffer) {}
 
 void AsyncInputStream::return_result (unsigned int bytes, unsigned int skip, std::function<void(int, char*)> cb) {
-
-    std::cout << "returning result\n";
-
     char subbuf[bytes];
     memcpy(subbuf, buffer.data + buffer.start, bytes);
     buffer.start += bytes + skip;
@@ -46,9 +43,6 @@ void AsyncInputStream::read (unsigned int bytes, std::function<void(int, char*)>
 }
 
 void AsyncInputStream::read_until (const std::string &delimiter, std::function<void(int, char*)> cb) {
-
-    // std::cout << "read_until exec\n";
-
     char *delimiter_pos = static_cast<char*>(memmem(buffer.data + buffer.start, buffer.end - buffer.start, delimiter.c_str(), delimiter.size()));
 
     if (delimiter_pos != nullptr) {

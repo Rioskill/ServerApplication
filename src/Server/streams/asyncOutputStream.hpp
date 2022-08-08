@@ -9,7 +9,7 @@ public:
     AsyncOutputStream (int fd, EventLoop *loop);
     AsyncOutputStream (): Stream(-1, nullptr) {}
 
-    void write (unsigned int bytes, void *message, std::function<void()> cb);
+    void write (unsigned int bytes, const void *message, std::function<void()> cb);
 };
 
 #endif

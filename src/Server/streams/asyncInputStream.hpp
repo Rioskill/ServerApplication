@@ -48,7 +48,7 @@ protected:
             unsigned int new_size = size * 2;
             char *new_data = new char[new_size];
 
-            std::cout << "expanding, new size = " << new_size << std::endl;
+            // std::cout << "expanding, new size = " << new_size << std::endl;
 
             memcpy(new_data, data + start, size - start);
             size = new_size;

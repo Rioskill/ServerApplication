@@ -1,8 +1,6 @@
 #include "connectionProcessor.hpp"
 
-RoomEchoConnectionProcessor::RoomEchoConnectionProcessor (WorkerManager *workerManager, RoomManager *roomManager, EventLoop *loop): workerManager(workerManager), roomManager(roomManager), loop(loop) {
-
-}
+RoomEchoConnectionProcessor::RoomEchoConnectionProcessor (WorkerManager *workerManager, RoomManager *roomManager, EventLoop *loop): workerManager(workerManager), roomManager(roomManager), loop(loop) {}
 
 RoomEchoConnectionProcessor::~RoomEchoConnectionProcessor() {}
 
@@ -71,9 +69,7 @@ Room *RoomEchoConnectionProcessor::connect_to_room(const std::string &room_name)
     return room;
 }
 
-void RoomEchoConnectionProcessor::process (int client_fd) {
-    Client *client = new Client(client_fd, loop);
-
+void RoomEchoConnectionProcessor::process (Client *client) {
     client->read([this, client](int size, char *data){
         std::string room_name(data, size);
 
@@ -86,23 +82,43 @@ void RoomEchoConnectionProcessor::process (int client_fd) {
     });
 }
 
-void BasicEchoConnectionProcessor::process_message (Client *client) {
+void BasicEchoConnectionProcessor::process (Client *client) {
     client->read([this, client](int size, char *data){
-        client->write(size, data, [this, size, client, data](){
-            std::string message(data, size);
-            std::cout << "recieved and sent: " << std::quoted(message) << std::endl;
+        std::string message(data, size);
+        std::cout << "recieved: " << std::quoted(message) << std::endl << std::endl;
 
-            if (message == "exit") {
-                client->close();
-                delete client;
-            } else {
-                process_message(client);
+        HttpRequest request(message);
+
+        std::cout << "method: " << std::quoted(request.method) << std::endl;
+        std::cout << "path: " << std::quoted(request.path) << std::endl;
+        std::cout << "protocol: " << std::quoted(request.protocol) << std::endl;
+
+        for (auto &[key, values]: request.headers) {
+            std::cout << "{" << std::quoted(key) << ": [";
+            for (auto &value: values) {
+                std::cout << std::quoted(value) << ", ";
             }
+            std::cout << "] }\n";
+        }
+
+        std::cout << std::endl;
+
+        HttpResponse response(200, "OK");
+        response.addHeader("key", "value");
+        response.addHeader("smth", "smth else");
+
+
+
+        response.setBody("message");
+
+        std::string response_message = response.render();
+
+        std::cout << response.render() << std::endl;
+
+        client->write(response_message.size(), response_message.c_str(), [this, size, client](){
+            // process_message(client);
+            client->close();
+            delete client;
         });
     });
-}
-
-void BasicEchoConnectionProcessor::process (int client_fd) {
-    Client *client = new Client(client_fd, loop);
-    process_message(client);
 }

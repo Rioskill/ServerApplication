@@ -1,12 +1,3 @@
-#include <stdio.h>
-#include <cstring>
-#include <functional>
-#include <string>
-#include <iostream>
-#include <queue>
-#include <errno.h>
-#include <deque>
-#include <unordered_map>
 #include <csignal>
 
 #include "eventLoop.hpp"
@@ -17,7 +8,7 @@
 
 EventLoop loop;
 WorkerManager workerManager(&loop);   // global so they properly delete everything after SIGINT
-RoomManager roomManager;
+// RoomManager roomManager;
 
 void SIGINT_handler(int signum) {
     loop.stop();

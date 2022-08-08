@@ -93,8 +93,8 @@ int main(int argc, char const* argv[])
                 kill(pid, SIGKILL);
             }
 
-            // send_endl(sock, input);
-            send_size(sock, input);
+            send_endl(sock, input);
+            // send_size(sock, input);
         }
     }
 

@@ -2,14 +2,14 @@
 
 AsyncOutputStream::AsyncOutputStream (int fd, EventLoop *loop): File(fd), Stream(fd, loop) {}
 
-void AsyncOutputStream::write (unsigned int bytes, void *message, std::function<void()> cb) {
+void AsyncOutputStream::write (unsigned int bytes, const void *message, std::function<void()> cb) {
     int written_bytes = ::write(fd, message, bytes);
     if (bytes == written_bytes) {
         cb();
     }
     else {
         loop->schedule_on_writeable(fd, [this, message, bytes, cb, written_bytes](){
-            write(bytes - written_bytes, static_cast<char*>(message) + written_bytes, cb);
+            write(bytes - written_bytes, static_cast<const char*>(message) + written_bytes, cb);
         });
     }
 }

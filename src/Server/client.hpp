@@ -16,12 +16,16 @@ public:
     Client (const File &file, EventLoop *loop, int managerID = -1): in(file.get_fd(), 20, loop), out(file.get_fd(), loop), managerID(managerID) {}
 
     void read (std::function<void(int, char*)> cb) {
-        in.read_until("\n", cb);
+        in.read_until("\r\n\r\n", cb);
     }
 
-    void write (unsigned int bytes, void *message, std::function<void()> cb){
-        out.write(sizeof(int), &bytes, [this, bytes, message, cb](){
-            out.write(bytes, message, cb);
+    void write (unsigned int bytes, const void *message, std::function<void()> cb){
+        // out.write(sizeof(int), &bytes, [this, bytes, message, cb](){
+        //     out.write(bytes, message, cb);
+        // });
+        out.write(bytes, message, [this, cb](){
+            char message[] = "\r\n\r\n";
+            out.write(4, message, cb);
         });
     }
 

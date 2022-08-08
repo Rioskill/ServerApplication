@@ -5,7 +5,10 @@ void Acceptor::accept() {
 
     if (fd != -1) {
         std::cout << "accepted\n";
-        processor->process(fd);
+
+        Client *client = new Client(fd, loop);
+
+        processor->process(client);
     }
     loop->schedule_on_readable(socket.get_fd(), [this](){accept();});
 }
