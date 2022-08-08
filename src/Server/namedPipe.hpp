@@ -1,5 +1,5 @@
-#ifndef NAMEDPIPE
-#define NAMEDPIPE
+#ifndef NAMEDPIPE_H
+#define NAMEDPIPE_H
 
 #include <unistd.h>
 #include <sys/stat.h>

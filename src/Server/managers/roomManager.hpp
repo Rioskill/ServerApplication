@@ -1,5 +1,5 @@
-#ifndef ROOMMANAGER
-#define ROOMMANAGER
+#ifndef ROOMMANAGER_H
+#define ROOMMANAGER_H
 
 #include <map>
 

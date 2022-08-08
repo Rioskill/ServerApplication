@@ -1,5 +1,5 @@
-#ifndef ASYNCINPUTSTREAM
-#define ASYNCINPUTSTREAM
+#ifndef ASYNCINPUTSTREAM_H
+#define ASYNCINPUTSTREAM_H
 
 #include <iostream>
 #include <cstdlib>

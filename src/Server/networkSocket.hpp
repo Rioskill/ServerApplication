@@ -1,5 +1,5 @@
-#ifndef NETWORKSOCKET
-#define NETWORKSOCKET
+#ifndef NETWORKSOCKET_H
+#define NETWORKSOCKET_H
 
 #include <iostream>
 #include <netinet/in.h>

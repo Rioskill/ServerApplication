@@ -1,5 +1,5 @@
-#ifndef ACCEPTOR
-#define ACCEPTOR
+#ifndef ACCEPTOR_H
+#define ACCEPTOR_H
 
 #include <iostream>
 #include "eventLoop.hpp"

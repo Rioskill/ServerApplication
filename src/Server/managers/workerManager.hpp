@@ -1,5 +1,5 @@
-#ifndef WORKERMANAGER
-#define WORKERMANAGER
+#ifndef WORKERMANAGER_H
+#define WORKERMANAGER_H
 
 #include <map>
 #include <csignal>

@@ -1,5 +1,5 @@
-#ifndef ASYNCOUTPUTSTREAM
-#define ASYNCOUTPUTSTREAM
+#ifndef ASYNCOUTPUTSTREAM_H
+#define ASYNCOUTPUTSTREAM_H
 
 #include <unistd.h>
 #include "stream.hpp"

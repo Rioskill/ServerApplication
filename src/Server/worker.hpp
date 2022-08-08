@@ -1,5 +1,5 @@
-#ifndef WORKER
-#define WORKER
+#ifndef WORKER_H
+#define WORKER_H
 
 #include <unistd.h>
 #include <fcntl.h>

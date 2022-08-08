@@ -1,5 +1,5 @@
-#ifndef ROOM
-#define ROOM
+#ifndef ROOM_H
+#define ROOM_H
 
 #include <map>
 

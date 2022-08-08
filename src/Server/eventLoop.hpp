@@ -1,5 +1,5 @@
-#ifndef EVENTLOOP
-#define EVENTLOOP
+#ifndef EVENTLOOP_H
+#define EVENTLOOP_H
 
 #include <iostream>
 #include <functional>

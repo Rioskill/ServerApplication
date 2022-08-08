@@ -1,5 +1,5 @@
-#ifndef CONNECTIONPROCESSOR
-#define CONNECTIONPROCESSOR
+#ifndef CONNECTIONPROCESSOR_H
+#define CONNECTIONPROCESSOR_H
 
 #include "workerManager.hpp"
 #include "roomManager.hpp"
@@ -9,6 +9,8 @@
 
 #include <map>
 #include <iomanip>
+#include <cstdio>
+#include <fstream>
 
 class ConnectionProcessor {
 public:

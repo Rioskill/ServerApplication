@@ -93,7 +93,7 @@ void BasicEchoConnectionProcessor::process (Client *client) {
         std::cout << "path: " << std::quoted(request.path) << std::endl;
         std::cout << "protocol: " << std::quoted(request.protocol) << std::endl;
 
-        for (auto &[key, values]: request.headers) {
+        for (auto &[key, values]: request.getHeaders()) {
             std::cout << "{" << std::quoted(key) << ": [";
             for (auto &value: values) {
                 std::cout << std::quoted(value) << ", ";
@@ -104,16 +104,17 @@ void BasicEchoConnectionProcessor::process (Client *client) {
         std::cout << std::endl;
 
         HttpResponse response(200, "OK");
-        response.addHeader("key", "value");
-        response.addHeader("smth", "smth else");
 
 
+        std::ifstream file_stream("templates/index.html");
+        std::stringstream buffer;
+        buffer << file_stream.rdbuf();
 
-        response.setBody("message");
+        response.setBody(buffer.str());
 
         std::string response_message = response.render();
 
-        std::cout << response.render() << std::endl;
+        // std::cout << response.render() << std::endl;
 
         client->write(response_message.size(), response_message.c_str(), [this, size, client](){
             // process_message(client);

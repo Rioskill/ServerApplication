@@ -1,5 +1,5 @@
-#ifndef IDASSIGNER
-#define IDASSIGNER
+#ifndef IDASSIGNER_H
+#define IDASSIGNER_H
 
 #include <queue>
 
