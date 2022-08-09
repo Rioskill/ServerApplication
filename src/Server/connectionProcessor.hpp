@@ -33,6 +33,8 @@ private:
 
     void setFileBody (HttpResponse &response, const std::string  &file_name);
 
+    void respond (Client *client, const HttpRequest &request);
+
 public:
     HttpProcessor (EventLoop *loop): loop(loop) {}
 

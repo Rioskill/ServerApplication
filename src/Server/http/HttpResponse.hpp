@@ -14,11 +14,12 @@ private:
     std::string body_string;
 
 public:
-    HttpResponse (int status_code, std::string reason_phrase): status_code(status_code), reason_phrase(reason_phrase) {}
+    HttpResponse (int status_code, const std::string &reason_phrase): status_code(status_code), reason_phrase(reason_phrase) {}
 
     std::string render() const;
 
     void setBody (const std::string &body);
+    void setStatus (int status_code, const std::string &reason_phrase);
 };
 
 #endif

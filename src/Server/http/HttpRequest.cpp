@@ -67,3 +67,7 @@ void HttpRequest::parse_headers (const std::string_view &headers_str) {
 
     headers.emplace(key, values);
 }
+
+void HttpRequest::set_body (const std::string &body_string) {
+    this->body_string = body_string;
+}

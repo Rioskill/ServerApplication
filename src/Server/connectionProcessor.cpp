@@ -102,6 +102,44 @@ void HttpProcessor::setFileBody (HttpResponse &response, const std::string &file
     response.setBody(buffer.str());
 }
 
+void HttpProcessor::respond (Client *client, const HttpRequest &request) {
+    HttpResponse response(200, "OK");
+
+    if (request.path == "/") {
+        response.addHeader("Content-Type", "text/html");
+        setFileBody(response, "pages/index.html");
+    }
+    else if (request.path == "/main.js") {
+        response.addHeader("Content-Type", "application/javascript");
+        setFileBody(response, "pages/main.js");
+    } else {
+        response.setStatus(404, "Not Found");
+    }
+
+    std::string response_message = response.render();
+
+    bool keep_alive = true;
+
+    if (request.getHeaders().contains("Connection")) {
+        if (*request.getHeaders().at("Connection").begin() == "keep-alive")
+            keep_alive = true;
+        else
+            keep_alive = false;
+    }
+
+    keep_alive = false;
+
+    client->write(response_message.size(), response_message.c_str(), [this, client, keep_alive](){
+
+        if (keep_alive) {
+            process(client);
+        } else {
+            client->close();
+            delete client;
+        }
+    });
+}
+
 void HttpProcessor::process (Client *client) {
     client->read([this, client](int size, char *data){
         std::string message(data, size);
@@ -109,37 +147,16 @@ void HttpProcessor::process (Client *client) {
 
         HttpRequest request(message);
 
-        std::cout << "method: " << std::quoted(request.method) << std::endl;
-        std::cout << "path: " << std::quoted(request.path) << std::endl;
-        std::cout << "protocol: " << std::quoted(request.protocol) << std::endl;
+        if (request.getHeaders().contains("Content-Length")) {
+            unsigned int content_length = std::stoi(*request.getHeaders().at("Content-Length").begin());
 
-        for (auto &[key, values]: request.getHeaders()) {
-            std::cout << "{" << std::quoted(key) << ": [";
-            for (auto &value: values) {
-                std::cout << std::quoted(value) << ", ";
-            }
-            std::cout << "] }\n";
+            client->read_n_bytes(content_length, [this, client, request](int size, char *data){
+                std::string body_string(data, size);
+                std::cout << "body: " << body_string << std::endl << std::endl;
+                respond(client, request);
+            });
+        } else {
+            respond(client, request);
         }
-
-        std::cout << std::endl;
-
-        HttpResponse response(200, "OK");
-
-        if (request.path == "/") {
-            response.addHeader("Content-Type", "text/html");
-            setFileBody(response, "pages/index.html");
-        }
-        else if (request.path == "/main.js") {
-            response.addHeader("Content-Type", "application/javascript");
-            setFileBody(response, "pages/main.js");
-        }
-
-        std::string response_message = response.render();
-
-        client->write(response_message.size(), response_message.c_str(), [this, client](){
-            // process_message(client);
-            client->close();
-            delete client;
-        });
     });
 }

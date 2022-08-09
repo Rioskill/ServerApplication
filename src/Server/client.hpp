@@ -15,6 +15,10 @@ private:
 public:
     Client (const File &file, EventLoop *loop, int managerID = -1): in(file.get_fd(), 20, loop), out(file.get_fd(), loop), managerID(managerID) {}
 
+    void read_n_bytes (unsigned int n, std::function<void(int, char*)> cb) {
+        in.read(n, cb);
+    }
+
     void read (std::function<void(int, char*)> cb) {
         in.read_until("\r\n\r\n", cb);
     }

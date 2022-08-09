@@ -34,7 +34,7 @@ protected:
     }
 
 public:
-    const std::map<std::string, std::set<std::string>> &getHeaders() {
+    const std::map<std::string, std::set<std::string>> &getHeaders() const {
         return headers;
     }
 

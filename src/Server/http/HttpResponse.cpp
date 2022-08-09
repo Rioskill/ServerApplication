@@ -18,3 +18,8 @@ void HttpResponse::setBody (const std::string &body) {
 
     body_string = body;
 }
+
+void HttpResponse::setStatus (int status_cose, const std::string &reason_phrase) {
+    this->status_code = status_code;
+    this->reason_phrase = reason_phrase;
+}

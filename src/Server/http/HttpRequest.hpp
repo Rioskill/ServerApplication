@@ -16,11 +16,14 @@ public:
     std::string path;
     std::string protocol;
 
+    std::string body_string;
+
 private:
 
     std::set<std::string> split_by_comma(std::string_view &line);
     void parse_request_line (const std::string_view &request_line);
     void parse_headers (const std::string_view &headers_str);
+    void set_body (const std::string &body_string);
 
 public:
     HttpRequest (std::string header);
