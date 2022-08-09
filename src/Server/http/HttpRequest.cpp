@@ -35,8 +35,8 @@ void HttpRequest::parse_request_line (const std::string_view &request_line) {
     size_t whitespace = request_line.find(' ');
     method = std::string(request_line.begin(), whitespace);
 
-    size_t start_path = whitespace;
-    whitespace = request_line.find(' ', whitespace + 1);
+    size_t start_path = whitespace + 1;
+    whitespace = request_line.find(' ', start_path);
 
     path = std::string(request_line.begin() + start_path, request_line.begin() + whitespace);
     protocol = std::string(request_line.begin() + whitespace + 1, request_line.end());

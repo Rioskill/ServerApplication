@@ -27,6 +27,18 @@ public:
     void process (Client *client) override;
 };
 
+class HttpProcessor: public ConnectionProcessor {
+private:
+    EventLoop *loop;
+
+    void setFileBody (HttpResponse &response, const std::string  &file_name);
+
+public:
+    HttpProcessor (EventLoop *loop): loop(loop) {}
+
+    void process (Client *client) override;
+};
+
 class RoomEchoConnectionProcessor: public ConnectionProcessor {
 private:
 

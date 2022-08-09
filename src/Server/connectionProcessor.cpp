@@ -85,6 +85,26 @@ void RoomEchoConnectionProcessor::process (Client *client) {
 void BasicEchoConnectionProcessor::process (Client *client) {
     client->read([this, client](int size, char *data){
         std::string message(data, size);
+        std::cout << "recieved: " << std::quoted(message) << std::endl;
+
+        client->write(size, data, [client](){
+            client->close();
+            delete client;
+        });
+    });
+}
+
+void HttpProcessor::setFileBody (HttpResponse &response, const std::string &file_name) {
+    std::ifstream file_stream(file_name);
+    std::stringstream buffer;
+    buffer << file_stream.rdbuf();
+
+    response.setBody(buffer.str());
+}
+
+void HttpProcessor::process (Client *client) {
+    client->read([this, client](int size, char *data){
+        std::string message(data, size);
         std::cout << "recieved: " << std::quoted(message) << std::endl << std::endl;
 
         HttpRequest request(message);
@@ -105,18 +125,18 @@ void BasicEchoConnectionProcessor::process (Client *client) {
 
         HttpResponse response(200, "OK");
 
-
-        std::ifstream file_stream("templates/index.html");
-        std::stringstream buffer;
-        buffer << file_stream.rdbuf();
-
-        response.setBody(buffer.str());
+        if (request.path == "/") {
+            response.addHeader("Content-Type", "text/html");
+            setFileBody(response, "pages/index.html");
+        }
+        else if (request.path == "/main.js") {
+            response.addHeader("Content-Type", "application/javascript");
+            setFileBody(response, "pages/main.js");
+        }
 
         std::string response_message = response.render();
 
-        // std::cout << response.render() << std::endl;
-
-        client->write(response_message.size(), response_message.c_str(), [this, size, client](){
+        client->write(response_message.size(), response_message.c_str(), [this, client](){
             // process_message(client);
             client->close();
             delete client;

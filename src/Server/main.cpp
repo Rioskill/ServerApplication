@@ -26,7 +26,8 @@ int main () {
     NetworkSocket socket (ip, port);
 
     // RoomEchoConnectionProcessor processor(&workerManager, &roomManager, &loop);
-    BasicEchoConnectionProcessor processor(&loop);
+    // BasicEchoConnectionProcessor processor(&loop);
+    HttpProcessor processor(&loop);
 
     Acceptor acceptor(socket, &loop, &processor);
 

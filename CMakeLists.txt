@@ -31,7 +31,7 @@ set(worker_src
     ${worker_src_path}/main.cpp
 )
 
-FILE(COPY ${server_src_path}/templates DESTINATION .)
+FILE(COPY ${client_src_path}/pages DESTINATION .)
 
 add_executable(server ${server_src})
 add_executable(client ${client_src})
