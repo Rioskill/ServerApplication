@@ -6,6 +6,7 @@
 #include "client.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
+#include "clientManager.hpp"
 
 #include <map>
 #include <iomanip>
@@ -30,13 +31,15 @@ public:
 class HttpProcessor: public ConnectionProcessor {
 private:
     EventLoop *loop;
+    ClientManager *clientManager;
 
     void setFileBody (HttpResponse &response, const std::string  &file_name);
-
     void respond (Client *client, const HttpRequest &request);
 
+    // void checkForConnectionClose (Client *client);
+
 public:
-    HttpProcessor (EventLoop *loop): loop(loop) {}
+    HttpProcessor (EventLoop *loop, ClientManager *clientManager): loop(loop), clientManager(clientManager) {}
 
     void process (Client *client) override;
 };

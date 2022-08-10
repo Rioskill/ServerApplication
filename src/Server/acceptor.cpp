@@ -4,7 +4,7 @@ void Acceptor::accept() {
     int fd = socket.accept_connection();
 
     if (fd != -1) {
-        std::cout << "accepted\n";
+        std::cout << "accepted, fd = " << fd << std::endl;;
 
         Client *client = new Client(fd, loop);
 

@@ -1,14 +1,17 @@
 #include <csignal>
+#include <chrono>
 
 #include "eventLoop.hpp"
 #include "acceptor.hpp"
 #include "workerManager.hpp"
 #include "roomManager.hpp"
 #include "connectionProcessor.hpp"
+#include "clientManager.hpp"
 
 EventLoop loop;
 WorkerManager workerManager(&loop);   // global so they properly delete everything after SIGINT
 // RoomManager roomManager;
+ClientManager clientManager(&loop, std::chrono::seconds(1));
 
 void SIGINT_handler(int signum) {
     loop.stop();
@@ -27,7 +30,7 @@ int main () {
 
     // RoomEchoConnectionProcessor processor(&workerManager, &roomManager, &loop);
     // BasicEchoConnectionProcessor processor(&loop);
-    HttpProcessor processor(&loop);
+    HttpProcessor processor(&loop, &clientManager);
 
     Acceptor acceptor(socket, &loop, &processor);
 

@@ -1,7 +1,11 @@
 #include "eventLoop.hpp"
 
-void EventLoop::schedule(std::function<void()> callback) {
+void EventLoop::schedule (std::function<void()> callback) {
     scheduled_callbacks.push(callback);
+}
+
+void EventLoop::schedule_deletion (std::function<void()> callback) {
+    scheduled_deletions.push(callback);
 }
 
 void EventLoop::schedule_on_readable (int fd, std::function<void()> callback) {
@@ -10,6 +14,11 @@ void EventLoop::schedule_on_readable (int fd, std::function<void()> callback) {
 
 void EventLoop::schedule_on_writeable (int fd, std::function<void()> callback) {
     on_writeable_callbacks.emplace(fd, callback);
+}
+
+void EventLoop::delete_schedules (int fd) {
+    on_readable_callbacks.erase(fd);
+    on_writeable_callbacks.erase(fd);
 }
 
 void EventLoop::schedule_pack (std::unordered_map<int, std::function<void()>> &callbacks, fd_set &set) {
@@ -38,6 +47,11 @@ void EventLoop::set_fds_pack (std::unordered_map<int, std::function<void()>> &ca
     }
 }
 
+void EventLoop::empty_queue (std::queue<std::function<void()>> &queue) {
+    std::queue<std::function<void()>> empty;
+    std::swap(queue, empty);
+}
+
 void EventLoop::stop() {
     status = Status::Done;
 }
@@ -47,7 +61,16 @@ void EventLoop::run() {
 
     std::cout << "EventLoop started\n";
 
-    while (status == Status::Working) {
+    while (true) {
+
+        auto current_deletions = scheduled_deletions;
+        empty_queue(scheduled_deletions);
+
+        while (!current_deletions.empty()) {
+            current_deletions.front()();
+            current_deletions.pop();
+        }
+
         fd_set read_fds;
         fd_set write_fds;
 

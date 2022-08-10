@@ -116,6 +116,8 @@ void HttpProcessor::respond (Client *client, const HttpRequest &request) {
         response.setStatus(404, "Not Found");
     }
 
+    response.addHeader("Connection", "keep-alive");
+
     std::string response_message = response.render();
 
     bool keep_alive = true;
@@ -127,23 +129,25 @@ void HttpProcessor::respond (Client *client, const HttpRequest &request) {
             keep_alive = false;
     }
 
-    keep_alive = false;
+    // keep_alive = false;
 
     client->write(response_message.size(), response_message.c_str(), [this, client, keep_alive](){
-
-        if (keep_alive) {
-            process(client);
-        } else {
-            client->close();
-            delete client;
-        }
+        clientManager->updateTimeout(client);
+        process(client);
     });
 }
 
 void HttpProcessor::process (Client *client) {
+
+    if (client->getManagerID() == -1) {
+        clientManager->addClient(client);
+        clientManager->updateTimeout(client);
+        clientManager->scheduleCheckTimeout(client);
+    }
+
     client->read([this, client](int size, char *data){
         std::string message(data, size);
-        std::cout << "recieved: " << std::quoted(message) << std::endl << std::endl;
+        // std::cout << "recieved: " << std::quoted(message) << std::endl << std::endl;
 
         HttpRequest request(message);
 
