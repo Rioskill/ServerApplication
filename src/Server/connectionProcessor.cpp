@@ -94,27 +94,21 @@ void BasicEchoConnectionProcessor::process (Client *client) {
     });
 }
 
-void HttpProcessor::setFileBody (HttpResponse &response, const std::string &file_name) {
-    std::ifstream file_stream(file_name);
-    std::stringstream buffer;
-    buffer << file_stream.rdbuf();
-
-    response.setBody(buffer.str());
-}
-
 void HttpProcessor::respond (Client *client, const HttpRequest &request) {
-    HttpResponse response(200, "OK");
+    // HttpResponse response(200, "OK");
 
-    if (request.path == "/") {
-        response.addHeader("Content-Type", "text/html");
-        setFileBody(response, "pages/index.html");
-    }
-    else if (request.path == "/main.js") {
-        response.addHeader("Content-Type", "application/javascript");
-        setFileBody(response, "pages/main.js");
-    } else {
-        response.setStatus(404, "Not Found");
-    }
+    // if (request.path == "/") {
+    //     response.addHeader("Content-Type", "text/html");
+    //     setFileBody(response, "pages/index.html");
+    // }
+    // else if (request.path == "/main.js") {
+    //     response.addHeader("Content-Type", "application/javascript");
+    //     setFileBody(response, "pages/main.js");
+    // } else {
+    //     response.setStatus(404, "Not Found");
+    // }
+
+    HttpResponse response = check_routes(request.path);
 
     response.addHeader("Connection", "keep-alive");
 

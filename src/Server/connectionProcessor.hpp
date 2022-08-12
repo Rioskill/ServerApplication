@@ -12,6 +12,7 @@
 #include <iomanip>
 #include <cstdio>
 #include <fstream>
+#include <functional>
 
 class ConnectionProcessor {
 public:
@@ -32,14 +33,14 @@ class HttpProcessor: public ConnectionProcessor {
 private:
     EventLoop *loop;
     ClientManager *clientManager;
+    
+    using route_func = std::function<HttpResponse(const std::string&)>;
+    route_func check_routes;
 
-    void setFileBody (HttpResponse &response, const std::string  &file_name);
     void respond (Client *client, const HttpRequest &request);
 
-    // void checkForConnectionClose (Client *client);
-
 public:
-    HttpProcessor (EventLoop *loop, ClientManager *clientManager): loop(loop), clientManager(clientManager) {}
+    HttpProcessor (EventLoop *loop, ClientManager *clientManager, route_func check_routes): loop(loop), clientManager(clientManager), check_routes(check_routes) {}
 
     void process (Client *client) override;
 };

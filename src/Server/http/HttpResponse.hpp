@@ -15,6 +15,7 @@ private:
 
 public:
     HttpResponse (int status_code, const std::string &reason_phrase): status_code(status_code), reason_phrase(reason_phrase) {}
+    HttpResponse(): HttpResponse(200, "OK"){}
 
     std::string render() const;
 
