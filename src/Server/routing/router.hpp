@@ -288,8 +288,6 @@ private:
     std::string path;
     func_obj function;
 
-    // using nothing = func_type::nothing;
-
 public:
     template <typename FUNC>
     Route (FUNC function): function(function) {

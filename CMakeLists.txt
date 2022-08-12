@@ -37,5 +37,12 @@ add_executable(server ${server_src})
 # add_executable(client ${client_src})
 # add_executable(worker ${worker_src})
 
-target_include_directories(server PRIVATE ${server_src_path} ${server_src_path}/streams ${server_src_path}/managers ${server_src_path}/http)
+target_include_directories(server PRIVATE 
+                            ${server_src_path}
+                            ${server_src_path}/streams
+                            ${server_src_path}/managers
+                            ${server_src_path}/http
+                            ${server_src_path}/routing
+)
+
 # target_include_directories(client PRIVATE ${client_src_path})

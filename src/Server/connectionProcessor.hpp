@@ -14,6 +14,8 @@
 #include <fstream>
 #include <functional>
 
+#include "urls.hpp"
+
 class ConnectionProcessor {
 public:
     virtual void process(Client *client) = 0;
@@ -33,14 +35,11 @@ class HttpProcessor: public ConnectionProcessor {
 private:
     EventLoop *loop;
     ClientManager *clientManager;
-    
-    using route_func = std::function<HttpResponse(const std::string&)>;
-    route_func check_routes;
 
     void respond (Client *client, const HttpRequest &request);
 
 public:
-    HttpProcessor (EventLoop *loop, ClientManager *clientManager, route_func check_routes): loop(loop), clientManager(clientManager), check_routes(check_routes) {}
+    HttpProcessor (EventLoop *loop, ClientManager *clientManager): loop(loop), clientManager(clientManager){}
 
     void process (Client *client) override;
 };

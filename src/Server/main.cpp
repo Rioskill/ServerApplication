@@ -10,46 +10,6 @@
 #include "clientManager.hpp"
 #include "router.hpp"
 
-void setFileBody (HttpResponse &response, const std::string &file_name) {
-    std::ifstream file_stream(file_name);
-    std::stringstream buffer;
-    buffer << file_stream.rdbuf();
-
-    response.setBody(buffer.str());
-}
-
-HttpResponse root() {
-    HttpResponse response;
-    response.addHeader("Content-Type", "text/html");
-    setFileBody(response, "pages/index.html");
-
-    return response;
-}
-
-HttpResponse js() {
-    HttpResponse response;
-    response.addHeader("Content-Type", "application/javascript");
-    setFileBody(response, "pages/main.js");
-
-    return response;
-}
-
-HttpResponse defaultResponse() {
-    HttpResponse response(404, "Not Found");
-    return response;
-}
-
-std::tuple routes = {
-    Route<"/">(root),
-    Route<"/main.js">(js)
-};
-
-Router router(routes, defaultResponse);
-
-HttpResponse check_path(const std::string &path) {
-    return router.check_routes(path);
-}
-
 EventLoop loop;
 WorkerManager workerManager(&loop);   // global so they properly delete everything after SIGINT
 // RoomManager roomManager;
@@ -71,7 +31,7 @@ int main () {
 
     // RoomEchoConnectionProcessor processor(&workerManager, &roomManager, &loop);
     // BasicEchoConnectionProcessor processor(&loop);
-    HttpProcessor processor(&loop, &clientManager, check_path);
+    HttpProcessor processor(&loop, &clientManager);
 
     Acceptor acceptor(socket, &loop, &processor);
 
