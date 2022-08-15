@@ -28,7 +28,6 @@ public:
     void delete_schedules (int fd);
 
     void schedule_on_readable (int fd, std::function<void()> callback);
-
     void schedule_on_writeable (int fd, std::function<void()> callback);
 
     void schedule_pack (std::unordered_map<int, std::function<void()>> &callbacks, fd_set &set);

@@ -34,10 +34,14 @@ void send_size (int fd, const std::string &message) {
 }
 
 void send_endl (int fd, const std::string &message) {
-    char *ch_message = new char[message.size() + 1];
+    char *ch_message = new char[message.size() + 4];
 
     memcpy(ch_message, message.c_str(), message.size());
-    ch_message[message.size()] = '\n';
+    ch_message[message.size()] = '\r';
+    ch_message[message.size()+1] = '\n';
+    ch_message[message.size()+2] = '\r';
+    ch_message[message.size()+3] = '\n';
+
     int size = message.size() + 1;
 
     send(fd, ch_message, size, 0);
@@ -93,13 +97,17 @@ int main(int argc, char const* argv[])
                 kill(pid, SIGKILL);
             }
 
-            send_endl(sock, input);
+            std::string message = "GET / HTTP";
+
+            send_endl(sock, message);
             // send_size(sock, input);
         }
     }
 
     int status;
     waitpid(pid, &status, 1);
+
+
  
     // closing the connected socket
     close(client_fd);

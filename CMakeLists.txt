@@ -27,9 +27,9 @@ set(server_src
 #     ${client_src_path}/client.cpp
 # )
 
-set(worker_src
-    ${worker_src_path}/main.cpp
-)
+# set(worker_src
+#     ${worker_src_path}/main.cpp
+# )
 
 FILE(COPY ${client_src_path}/pages DESTINATION .)
 

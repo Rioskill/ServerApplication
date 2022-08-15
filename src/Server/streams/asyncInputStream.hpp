@@ -69,7 +69,7 @@ protected:
     Buffer buffer;
     void return_result (unsigned int bytes, unsigned int skip, std::function<void(int, char*)> cb);
 
-    void read_possible (std::function<void()> cb);
+    bool read_possible (std::function<void()> cb);
 
 public:
     AsyncInputStream (int fd, unsigned int buffer_size, EventLoop *loop);

@@ -73,16 +73,11 @@ void EventLoop::run() {
         set_fds_pack(on_readable_callbacks, read_fds, max_fd);
         set_fds_pack(on_writeable_callbacks, write_fds, max_fd);
 
-        // std::cout << "before select\n";
+        int pd = 42;
 
-        while (select(max_fd + 1, &read_fds, &write_fds, NULL, NULL) == -1) {
-            // std::cout << "error\n";
+        while ((pd = select(max_fd + 1, &read_fds, &write_fds, NULL, NULL)) == -1) {}
 
- 
-            // std::cout << errno << std::endl;
-        }
-            
-        // std::cout << "after select\n";
+        std::cout << "pd: " << pd << std::endl;
 
         schedule_pack(on_readable_callbacks, read_fds);
         schedule_pack(on_writeable_callbacks, write_fds);

@@ -97,29 +97,41 @@ void BasicEchoConnectionProcessor::process (Client *client) {
 void HttpProcessor::respond (Client *client, const HttpRequest &request) {
     HttpResponse response = router.check_routes(request.path);
 
-    // response.addHeader("Connection", "keep-alive");
-
     std::string response_message = response.render();
 
     std::cout << response_message << std::endl;
 
     client->write(response_message.size(), response_message.c_str(), [this, client](){
-        clientManager->updateTimeout(client);
-        process(client);
+        // clientManager->updateTimeout(client);
+        loop->schedule_on_readable(client->get_in_fd(), [this, client](){
+            process(client);
+        });
     });
 }
 
 void HttpProcessor::process (Client *client) {
 
+    std::cout << "processing\n";
+
     if (client->getManagerID() == -1) {
         clientManager->addClient(client);
-        clientManager->updateTimeout(client);
-        clientManager->scheduleCheckTimeout(client);
+        // clientManager->updateTimeout(client);
+        // clientManager->scheduleCheckTimeout(client);
     }
 
     client->read([this, client](int size, char *data){
+
+        if (size == 0) { // socket is closed
+            std::cout << "size = 0\n";
+            clientManager->removeClient(client);
+            return;
+        }
+
         std::string message(data, size);
-        // std::cout << "recieved: " << std::quoted(message) << std::endl << std::endl;
+        std::cout << "recieved: " << std::quoted(message) << std::endl << std::endl;
+
+        std::cout << size << std::endl;
+        std::cout << message << std::endl;
 
         HttpRequest request(message);
 

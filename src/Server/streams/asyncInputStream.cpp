@@ -18,20 +18,28 @@ void AsyncInputStream::return_result (unsigned int bytes, unsigned int skip, std
     cb(bytes, subbuf);
 }
 
-void AsyncInputStream::read_possible (std::function<void()> cb) {
+// returns true if socket is not closed
+bool AsyncInputStream::read_possible (std::function<void()> cb) {
 
     if (!is_open)
-        return;
+        return false;
 
     ssize_t bytes_read = buffer.read_possible(get_fd());
 
-    if (bytes_read == -1 || bytes_read == 0) {
+    if (bytes_read == 0) {
+        std::cout << "zero bytes read\n";
+        return false; // EOF => socket is closed
+    }
+
+    if (bytes_read == -1) {
         loop->schedule_on_readable(fd, [this, cb](){
             read_possible(cb);
-        });
+        }); 
     } else {
         cb();
     }
+
+    return true;
 }
  
 void AsyncInputStream::read (unsigned int bytes, std::function<void(int, char*)> cb) {
@@ -44,9 +52,13 @@ void AsyncInputStream::read (unsigned int bytes, std::function<void(int, char*)>
     if (buffer.end - buffer.start >= bytes) {
         return_result(bytes, 0, cb);
     } else {
-        read_possible([this, bytes, cb](){
+        bool res = read_possible([this, bytes, cb](){
             read(bytes, cb);
         });
+
+        if (res == false) {
+            cb(0, nullptr);
+        }
     }
 }
 
@@ -58,8 +70,12 @@ void AsyncInputStream::read_until (const std::string &delimiter, std::function<v
     } else {
         if (buffer.end == buffer.size - 1)
             buffer.expand();
-        read_possible([this, delimiter, cb](){
+        bool res = read_possible([this, delimiter, cb](){
             read_until(delimiter, cb);
         });
+
+        if (res == false) {
+            cb(0, nullptr);
+        }
     }
 }
