@@ -53,7 +53,11 @@ public:
         client->remove_schedules_from(loop);
 
         client->close();
-        delete client;
+
+        // loop->schedule([client]{
+        //     delete client;
+        // });
+
         clients.erase(id);
 
         id_assigner.releaseID(id);
@@ -72,7 +76,7 @@ public:
     }
 
     void scheduleCheckTimeout(int id) {
-        loop->schedule_deletion([this, id](){
+        loop->schedule([this, id](){
             checkTimeout(id);
         });
     }

@@ -14,6 +14,7 @@ public:
 class File {
 protected:
     int fd;
+    bool is_open;
 public:
     File (int fd): fd(fd) {}
 
@@ -26,6 +27,13 @@ public:
     }
     void set_fd (int fd) {
         this->fd = fd;
+    }
+
+    void close() {
+        if (is_open) {
+            is_open = false;
+            ::close(fd);
+        }
     }
 };
 

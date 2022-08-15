@@ -97,22 +97,13 @@ void BasicEchoConnectionProcessor::process (Client *client) {
 void HttpProcessor::respond (Client *client, const HttpRequest &request) {
     HttpResponse response = router.check_routes(request.path);
 
-    response.addHeader("Connection", "keep-alive");
+    // response.addHeader("Connection", "keep-alive");
 
     std::string response_message = response.render();
 
-    bool keep_alive = true;
+    std::cout << response_message << std::endl;
 
-    if (request.getHeaders().contains("Connection")) {
-        if (*request.getHeaders().at("Connection").begin() == "keep-alive")
-            keep_alive = true;
-        else
-            keep_alive = false;
-    }
-
-    // keep_alive = false;
-
-    client->write(response_message.size(), response_message.c_str(), [this, client, keep_alive](){
+    client->write(response_message.size(), response_message.c_str(), [this, client](){
         clientManager->updateTimeout(client);
         process(client);
     });

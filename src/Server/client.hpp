@@ -48,7 +48,9 @@ public:
     }
 
     void close() {
-        ::close(in.get_fd());
+        // ::close(in.get_fd());
+        in.close();
+        out.close();
     }
 };
 

@@ -13,7 +13,7 @@
 EventLoop loop;
 WorkerManager workerManager(&loop);   // global so they properly delete everything after SIGINT
 // RoomManager roomManager;
-ClientManager clientManager(&loop, std::chrono::seconds(1));
+ClientManager clientManager(&loop, std::chrono::seconds(2));
 
 void SIGINT_handler(int signum) {
     loop.stop();

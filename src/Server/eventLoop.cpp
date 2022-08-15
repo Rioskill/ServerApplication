@@ -4,10 +4,6 @@ void EventLoop::schedule (std::function<void()> callback) {
     scheduled_callbacks.push(callback);
 }
 
-void EventLoop::schedule_deletion (std::function<void()> callback) {
-    scheduled_deletions.push(callback);
-}
-
 void EventLoop::schedule_on_readable (int fd, std::function<void()> callback) {
     on_readable_callbacks.emplace(fd, callback);
 }
@@ -17,8 +13,12 @@ void EventLoop::schedule_on_writeable (int fd, std::function<void()> callback) {
 }
 
 void EventLoop::delete_schedules (int fd) {
+    std::cout << on_readable_callbacks.size() << std::endl;
+
     on_readable_callbacks.erase(fd);
     on_writeable_callbacks.erase(fd);
+
+    std::cout << on_readable_callbacks.size() << std::endl;
 }
 
 void EventLoop::schedule_pack (std::unordered_map<int, std::function<void()>> &callbacks, fd_set &set) {
@@ -61,16 +61,7 @@ void EventLoop::run() {
 
     std::cout << "EventLoop started\n";
 
-    while (true) {
-
-        auto current_deletions = scheduled_deletions;
-        empty_queue(scheduled_deletions);
-
-        while (!current_deletions.empty()) {
-            current_deletions.front()();
-            current_deletions.pop();
-        }
-
+    while (status == Status::Working) {
         fd_set read_fds;
         fd_set write_fds;
 
@@ -82,15 +73,26 @@ void EventLoop::run() {
         set_fds_pack(on_readable_callbacks, read_fds, max_fd);
         set_fds_pack(on_writeable_callbacks, write_fds, max_fd);
 
-        while (select(max_fd + 1, &read_fds, &write_fds, NULL, NULL) == -1)
-            continue;
+        // std::cout << "before select\n";
+
+        while (select(max_fd + 1, &read_fds, &write_fds, NULL, NULL) == -1) {
+            // std::cout << "error\n";
+
+ 
+            // std::cout << errno << std::endl;
+        }
             
+        // std::cout << "after select\n";
+
         schedule_pack(on_readable_callbacks, read_fds);
         schedule_pack(on_writeable_callbacks, write_fds);
 
-        while (!scheduled_callbacks.empty()) {
-            scheduled_callbacks.front()();
-            scheduled_callbacks.pop();
+        std::queue callbacks = scheduled_callbacks;
+        empty_queue(scheduled_callbacks);
+
+        while (!callbacks.empty()) {
+            callbacks.front()();
+            callbacks.pop();
         }
     }
 }

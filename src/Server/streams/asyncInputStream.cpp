@@ -1,7 +1,11 @@
 #include "asyncInputStream.hpp"
 
-AsyncInputStream::AsyncInputStream (int fd, unsigned int buffer_size, EventLoop *loop): File(fd), Stream(fd, loop), buffer(buffer_size) {}
-AsyncInputStream::AsyncInputStream (const AsyncInputStream &other): Stream(fd, loop), buffer(other.buffer) {}
+AsyncInputStream::AsyncInputStream (int fd, unsigned int buffer_size, EventLoop *loop): File(fd), Stream(fd, loop), buffer(buffer_size) {
+    is_open = true;
+}
+AsyncInputStream::AsyncInputStream (const AsyncInputStream &other): Stream(fd, loop), buffer(other.buffer) {
+    is_open = true;   
+}
 
 void AsyncInputStream::return_result (unsigned int bytes, unsigned int skip, std::function<void(int, char*)> cb) {
     char subbuf[bytes];
@@ -15,6 +19,10 @@ void AsyncInputStream::return_result (unsigned int bytes, unsigned int skip, std
 }
 
 void AsyncInputStream::read_possible (std::function<void()> cb) {
+
+    if (!is_open)
+        return;
+
     ssize_t bytes_read = buffer.read_possible(get_fd());
 
     if (bytes_read == -1 || bytes_read == 0) {
