@@ -30,4 +30,24 @@ inline HttpResponse js() {
     return response;
 }
 
+inline HttpResponse room (int room_id) {
+    HttpResponse response;
+
+    std::ifstream file_stream("pages/room.html");
+    std::stringstream buffer;
+    buffer << file_stream.rdbuf();
+
+    std::string file_str = buffer.str();
+
+    int pos = file_str.find("{}");
+
+    std::string res_str = file_str.substr(0, pos);
+    res_str += std::to_string(room_id);
+    res_str += file_str.substr(pos + 2);
+
+    response.setBody(res_str);
+
+    return response;
+}
+
 #endif

@@ -11,7 +11,8 @@ inline HttpResponse defaultResponse() {
 
 inline std::tuple routes = {
     Route<"/">(root),
-    Route<"/main.js">(js)
+    Route<"/main.js">(js),
+    Route<"/room/%d">(room)
 };
 
 inline Router router(routes, defaultResponse);
